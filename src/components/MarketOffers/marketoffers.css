@@ -1,0 +1,106 @@
+.marketOffers__outWrapper {
+  margin-top: 96px;
+  margin-bottom: 96px;
+}
+
+.marketOffers__wrapper {
+  width: 73vw;
+  height: max-content;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 72px;
+}
+
+.marketOffers__wrapper::-webkit-scrollbar {
+  background-color: #fff;
+  border-radius: 20px;
+  transition: all .3s;
+}
+
+.marketOffers__wrapper::-webkit-scrollbar-thumb {
+  background-color: #000;
+  border-radius: 20px;
+}
+
+.marketOffers__wrapper_sbInactive::-webkit-scrollbar {
+  visibility: hidden;
+}
+
+
+.marketOffers__list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  list-style: none;
+  width: max-content;
+  height: max-content;
+}
+
+.marketOffers__list_item {
+  width: 22vw;
+  height: max-content;
+  color: #000;
+  font-size: 32px;
+  margin-right: 3vw;
+  scroll-snap-align: start;
+  animation: card_reRender_anim .3s ease-in-out;
+}
+
+.marketOffers__list_item:last-child {
+  margin-right: 0;
+}
+
+.marketOffers__nav {
+  margin-bottom: 48px;
+}
+
+.marketOffers__nav_btn {
+  position: relative;
+  border: 0;
+  outline: none;
+  background-color: transparent;
+  color: #fff;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-size: 24px;
+  padding: 6px 18px;
+  border-radius: 20px;
+  margin-left: 12px;
+  transition: all 0.2s;
+}
+
+.marketOffers__nav_btn::after {
+  position: absolute;
+  content: "";
+  bottom: 4px;
+  left: 16px;
+  width: 0;
+  height: 1px;
+  background-color: #fff;
+  transition: all 0.2s;
+}
+
+.marketOffers__nav_btn:hover::after {
+  width: calc(100% - 32px);
+}
+
+.marketOffers__nav_btn_active.marketOffers__nav_btn::after {
+  width: calc(100% - 32px);
+}
+
+
+@keyframes card_reRender_anim {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 720px) {
+  .marketOffers__outWrapper {
+    display: none;
+  }
+}

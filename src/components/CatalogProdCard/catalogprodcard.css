@@ -1,0 +1,179 @@
+._card {
+  display: flex;
+  flex-direction: column;
+  /* padding: 12px 24px;
+  border-radius: 16px; */
+  width: 100%;
+  /* min-height: 60vh; */
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition: all .3s;
+  /* box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2); */
+}
+
+._card:hover {
+  scale: 1.01;
+}
+
+
+.card__mainInfo_img {
+  width: 100%;
+  height: 45vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.card__mainInfo_img img {
+  width: 100%;
+  border-radius: 24px;
+}
+
+.card__mainInfo_img button {
+  outline: none;
+  border: 0;
+  background-color: transparent;
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  scale: 0.8;
+  cursor: pointer;
+}
+
+.heart_svg_1 {
+  transition: all .3s;
+}
+
+.heart_svg_2 {
+  scale: 0;
+  transform-origin: 50% 50%;
+  fill: rgb(255, 74, 74);
+  stroke-opacity: 1;
+  stroke: rgb(255, 74, 74);
+  transition: all .3s;
+}
+
+.heart_svg_2_active {
+  scale: 1;
+  fill: rgb(255, 74, 74);
+}
+
+
+.card__mainInfo_img button:active .heart_svg_2 {
+  scale: 1;
+}
+
+.card__mainInfo_img button:active .heart_svg_1 {
+  stroke: rgb(255, 74, 74) ;
+}
+
+
+.card__mainInfo_text {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.card__text_name {
+  font-family: 'Marmelad', sans-serif;
+  font-weight: 300;
+  font-size: 32px;
+  margin: 0;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.card__text_description {
+  height: 48px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  margin: 0;
+}
+
+.card__priceInfo {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.card__priceBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  position: relative;
+}
+
+._price {
+  color: #fff;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 28px;
+  font-weight: 300;
+}
+
+._oldPrice {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  position: absolute;
+  top: 12px;
+  right: -10px;
+  color: #636363;
+  text-decoration: line-through;
+}
+
+.card__priceBox_cartBtn {
+  scale: 0.8;
+  transform-origin: right bottom;
+}
+
+.card_invertBtn {
+  background-color: #000;
+}
+
+@media (max-width: 720px) {
+
+  .card__mainInfo_text {
+    margin-bottom: 0;
+  }
+
+  .card__text_name {
+    font-size: 24px;
+  }
+
+  ._price {
+    font-size: 18px;
+  }
+
+  ._oldPrice {
+    font-size: 12px;
+    display: none;
+  }
+
+  .card__text_description {
+    display: none;
+  }
+
+  .card__priceInfo {
+    justify-content: space-between;
+  }
+
+  .card__priceBox {
+    justify-content: center;
+  }
+
+  .card__priceBox_cartBtn {
+    transform-origin: center;
+  }
+
+  .card__mainInfo_img {
+    height: 28vh;
+  }
+
+}

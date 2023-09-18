@@ -1,0 +1,307 @@
+.deviceBanner {
+  width: 100vw;
+  height: 90vh;
+  background-image: url(../../public/img/auth_back.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: row;
+  padding: 0 48px;
+}
+
+.deviceBanner_in {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  height: 64%;
+}
+
+.rightSide {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 56%;
+  padding-bottom: 10vh;
+  padding-right: 2vw;
+}
+
+.rightSide_nameBlock {
+  color: #fff;
+}
+
+.rightSide_nameBlock h1 {
+  font-family: "Jost", sans-serif;
+  font-weight: 200;
+  font-size: 56px;
+  letter-spacing: 0.12em;
+}
+
+.rightSide_nameBlock p {
+  font-family: "Jost", sans-serif;
+  font-style: normal;
+  font-weight: 200;
+  font-size: 30px;
+  letter-spacing: 0.1em;
+}
+
+.rightSide_colorANDprice {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.colorANDprice_color {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #fff;
+  font-size: 32px;
+  font-family: "Jost", sans-serif;
+  font-weight: 200;
+  letter-spacing: 0.1em;
+}
+
+.color_out {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  margin-left: 8px;
+  transition: all 0.3s;
+}
+
+.color_out:first-child {
+  margin-left: 16px;
+}
+
+.color_out:hover {
+  border-color: #fff;
+}
+
+.color_out_active {
+  border-color: #fff;
+}
+
+.color_in {
+  display: block;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  opacity: 1;
+  position: absolute;
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.25),
+    inset -5px -5px 10px rgba(0, 0, 0, 0.25);
+}
+
+.colorANDprice_price {
+  color: #fff;
+  font-family: "Jost", sans-serif;
+  font-weight: 200;
+  font-size: 42px;
+  letter-spacing: 0.1em;
+  margin-left: 96px;
+}
+
+.colorANDprice_price p span {
+  position: absolute;
+  color: #636363;
+  left: 180px;
+  text-decoration: line-through;
+  font-size: 24px;
+}
+
+.colorANDprice_price p {
+  position: relative;
+}
+
+.rightSide_buttonsBlock {
+  display: flex;
+  flex-direction: row;
+}
+
+.rightSide_buttonsBlock div {
+  margin-right: 48px;
+}
+
+.leftSide {
+  width: 44%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  padding: 0 36px;
+}
+
+.leftSide img {
+  max-width: 100%;
+}
+
+.img_main {
+  display: block;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  margin-top: 32px;
+}
+
+.img_main img {
+  width: 75%;
+  display: block;
+  margin: auto;
+  scale: 1.15;
+}
+
+.img_swiper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 48px;
+}
+
+.img_swiped {
+  cursor: pointer;
+  width: 30%;
+  border: transparent 1px solid;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.img_swiped img {
+  scale: 1.1;
+}
+
+.img_active {
+  border: 1px #fff solid;
+}
+
+.characters {
+  margin-top: 128px;
+}
+
+.technical_characters {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 80%;
+  margin: auto;
+  padding: 0 5vw;
+  gap: 18px;
+}
+
+.technical_characters_h2 {
+  font-weight: 400;
+  font-family: "Exo 2", sans-serif;
+  font-size: 40px;
+  color: #fff;
+  text-align: center;
+}
+
+.characters_wrapper {
+  margin: 0 96px;
+  width: 20%;
+}
+
+.characters_wrapper h3 {
+  color: #fff;
+  font-family: "Jost", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+.characters_item {
+  width: 200px;
+  color: #fff;
+  font-family: "Jost", sans-serif;
+  font-weight: 200;
+  font-size: 16px;
+}
+
+.item_h {
+  font-weight: 400;
+}
+
+@media (max-width: 1600px) {
+  .deviceBanner_in {
+    height: 90%;
+  }
+}
+
+@media (max-width: 720px) {
+  .deviceBanner {
+    flex-direction: column-reverse;
+    height: max-content;
+    padding: 18px;
+  }
+
+  .deviceBanner h1 {
+    font-size: 32px !important;
+  }
+
+  .deviceBanner p {
+    font-size: 20px !important;
+  }
+
+  .rightSide {
+    width: 100%;
+    padding: 0;
+    padding-bottom: 32px;
+  }
+
+  .leftSide {
+    width: 100%;
+    margin-bottom: 64px;
+  }
+
+  .rightSide_buttonsBlock {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .rightSide_buttonsBlock div {
+    margin: 0;
+  }
+
+  .rightSide_buttonsBlock button {
+    padding: 8px 12px;
+    width: max-content;
+  }
+
+  .rightSide_buttonsBlock button p {
+    font-size: 18px !important;
+    width: max-content;
+  }
+
+  .colorANDprice_price {
+    margin: 0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .colorANDprice_price p {
+    font-size: 32px !important;
+  }
+
+  .colorANDprice_price p span {
+    font-size: 20px !important;
+    left: 100%;
+  }
+
+  .characters {
+    margin-top: 48px;
+  }
+
+  .technical_characters {
+    flex-direction: column;
+    padding: 0 24px;
+    align-items: start;
+    justify-content: start;
+    width: 100%;
+  }
+}

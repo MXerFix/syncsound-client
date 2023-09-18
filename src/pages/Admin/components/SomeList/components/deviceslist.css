@@ -1,0 +1,95 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 15vh;
+  right: 0;
+  left: 0;
+}
+
+
+.wrapper img {
+  width: 20%;
+}
+
+.wrapper label {
+  color: white;
+}
+
+.in_wrapper {
+  width: 100%;
+  padding: 0 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 64px;
+}
+
+.admin_device_card {
+  min-width: 80%;
+  padding: 24px;
+  border: 1px solid white;
+  border-radius: 12px;
+}
+
+.device_card_mainBox {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.left_imageBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: flex-end;
+  position: relative;
+}
+
+.left_imageBox span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+}
+
+.rightInput_box {
+  display: flex;
+  flex-direction: column;
+}
+
+.rightInput_box input {
+  outline: none;
+  border: 0;
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 12px;
+  padding: 8px;
+  color: white;
+}
+
+.rightInput_box textarea {
+  outline: none;
+  border: 0;
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 12px;
+  padding: 8px;
+  color: white;
+}
+
+.rightSide_box {
+
+}
+
+.mini_InvertBtn {
+  padding: 8px 10px;
+  font-size: 16px;
+  position: relative;
+  margin-top: 24px;
+}

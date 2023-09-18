@@ -1,0 +1,156 @@
+.offerHistory__wrapper {
+  width: 100vw;
+  padding: 120px;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+.offerHistory__title {
+  margin-top: 90px;
+  font-family: "Montserrat Alternates";
+  color: #fff;
+  font-weight: 400;
+  font-size: 40px;
+  text-align: center;
+}
+
+ul {
+  padding: 0;
+  width: 85vw;
+}
+
+.offerHistory_li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.offerHistory_li:last-child {
+  margin-bottom: 0;
+}
+
+.offerList_li {
+  flex-direction: column;
+}
+
+.offerList__li_head {
+  width: 100%;
+  padding: 12px 32px;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111111;
+}
+
+.offerList__li_head div p {
+  margin-bottom: 8px;
+}
+
+.offerList__li_head div p:last-child {
+  margin-bottom: 0;
+}
+
+.li__head_offerDATE {
+  font-size: 18px;
+  font-family: "Jost";
+  letter-spacing: 0.08em;
+}
+
+.li__head_offerSUM {
+  font-weight: 200;
+}
+
+.li__head_offerSUM:first-child {
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.li__head_offerID {
+  color: rgb(255, 200, 35);
+  font-size: 14px;
+}
+
+.offerList__li_body {
+  background-color: #222;
+  padding: 12px 32px;
+  border-radius: 0 0 20px 20px;
+}
+
+.li__body_name {
+  width: 25%;
+}
+
+.li__body_productID {
+  width: 30%;
+  text-align: center;
+}
+
+.li__body_price {
+  width: 15%;
+  text-align: center;
+}
+
+.li__body_productCOUNT {
+  width: 15%;
+  text-align: center;
+}
+
+.li__body_total {
+  width: 15%;
+  text-align: end;
+}
+
+.CREATED_OFFER {
+  background-color: #fff;
+  color: #111111;
+}
+
+.VALIDATING_OFFER {
+  background-color: rgb(255, 239, 58);
+  color: #111111;
+}
+
+.PROCESSING_OFFER {
+  background-color: rgb(255, 200, 35);
+  color: #111111;
+}
+
+.FINISHED_OFFER {
+  background-color: rgb(44, 255, 58);
+  color: #111111;
+}
+
+.ERROR_OFFER {
+  background-color: rgb(255, 54, 54);
+  color: #fff;
+}
+
+.offer_status {
+  padding: 4px 0;
+  width: 120px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.offer_name {
+  width: 360px;
+}
+
+.offer_price {
+  width: 240px;
+  text-align: center;
+}
+
+.li__body_ex {
+  background-color: #111111;
+  padding: 12px 32px;
+  border-radius: 12px;
+}

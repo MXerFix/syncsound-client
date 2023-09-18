@@ -1,0 +1,125 @@
+
+.add_btn {
+  margin-top: 24px;
+}
+
+.in_form__wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.in_form__side {
+  width: 46%;
+  margin: 0 12px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.modal_wrapper {
+  position: absolute;
+  width: 100vw;
+  height: max-content;
+  min-height: 100vh;
+  padding-top: 10vh;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  scale: 1;
+  opacity: 1;
+}
+
+.modal_wrapper__disabled {
+  scale: 0;
+  opacity: 0;
+}
+
+.device_add__form {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 24px;
+  transition: all .3s;
+  max-width: 90%;
+}
+
+.device_add__form_disabled {
+  scale: 0;
+  opacity: 0;
+}
+
+.in_form__select {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.in_form__input {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.device_add__form label {
+  font-size: 24px;
+  color: white;
+}
+
+.buttons_box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+}
+
+.buttons_box button:last-child {
+  margin-left: 32px;
+}
+
+.add_bigDescription {
+  display: flex;
+  flex-direction: column;
+}
+
+.content_box {
+  display: flex;
+  flex-direction: row;
+  scale: 1;
+  opacity: 1;
+  transition: all .3s;
+}
+
+.content_box_disabled {
+  scale: 0;
+  opacity: 0;
+}
+
+.menu_button__box {
+  display: flex;
+  flex-direction: column;
+  margin: 0 24px;
+}
+
+.mini_label {
+  font-size: 18px !important;
+}
+
+.color_box {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.more_photo_box {
+  display: flex;
+  flex-direction: column;
+}

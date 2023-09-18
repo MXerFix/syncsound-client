@@ -1,0 +1,26 @@
+.profile_block__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+.wrapper__title {
+  margin-top: 90px;
+  font-family: 'Montserrat Alternates';
+  color: #fff;
+  font-weight: 400;
+  font-size: 40px;
+}
+
+.wrapper__box {
+  width: 100vw;
+  padding: 144px;
+  padding-top: 64px;
+  padding-bottom: 64px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+

@@ -1,0 +1,16 @@
+.advantages_box {
+  width: 64%;
+  height: max-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8vw;
+}
+
+@media (max-width: 720px) {
+  .advantages_box {
+    width: 85%;
+    margin-right: 6px;
+  }
+}

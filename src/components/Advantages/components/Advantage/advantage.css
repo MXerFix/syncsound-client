@@ -1,0 +1,22 @@
+._advantage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 20vw;
+}
+
+._advantage__title {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-weight: 300;
+  font-size: 30px;
+  color: #fff;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  ._advantage__title {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+}
