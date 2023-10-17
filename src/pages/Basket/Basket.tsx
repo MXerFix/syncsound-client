@@ -447,7 +447,7 @@ export const Basket = observer(() => {
                     if (payment === PAYMENT__WHEN_GET) {
                       addOffer(email, tel, name, sum, payment)
                       setTimeout(() => {
-                        window.location.href = 'http://localhost:3210/?payment_confirmation=true'
+                        window.location.href = 'https://syncsound.ru/?payment_confirmation=true'
                       }, 250);
                     } else if (payment === PAYMENT__CARD) {
                       createYooKassaPayment()
