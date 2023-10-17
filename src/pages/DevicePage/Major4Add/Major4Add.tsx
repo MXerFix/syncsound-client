@@ -26,7 +26,7 @@ const Info = [
 const Major4Add = () => {
   return (
     <div className='mt-32'>
-      {Info.map((obj, index) => <AddPosition key={obj.header} img={obj.img} header={obj.header} description={obj.description} reverse={(index+1)%2 == 0} />)}
+      {Info.map((obj, index) => <AddPosition className={index == 1 ? 'pl-0' : (index == 0 ? "pr-0" : "")} key={obj.header} img={obj.img} header={obj.header} description={obj.description} reverse={(index+1)%2 == 0} />)}
     </div>
   )
 }

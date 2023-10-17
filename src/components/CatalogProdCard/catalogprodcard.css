@@ -1,8 +1,8 @@
 ._card {
   display: flex;
   flex-direction: column;
-  /* padding: 12px 24px;
-  border-radius: 16px; */
+  padding: 8px 24px 12px 24px;
+  border-radius: 24px;
   width: 100%;
   /* min-height: 60vh; */
   scroll-snap-align: start;
@@ -13,6 +13,8 @@
 
 ._card:hover {
   scale: 1.01;
+  box-shadow: 1px 1px 30px rgba(0, 0, 0, 0.2),
+              -1px -1px 30px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -27,8 +29,10 @@
 }
 
 .card__mainInfo_img img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 45vh;
   border-radius: 24px;
+  z-index: -1;
 }
 
 .card__mainInfo_img button {
@@ -138,6 +142,17 @@
 }
 
 @media (max-width: 720px) {
+
+  ._card {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  ._card:hover {
+    padding: 0;
+    box-shadow: none;
+  }
 
   .card__mainInfo_text {
     margin-bottom: 0;

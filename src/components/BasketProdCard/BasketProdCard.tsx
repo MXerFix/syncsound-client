@@ -59,7 +59,7 @@ const BasketProdCard = ({ id, name, description, img, price, oldPrice, setSum }:
               </div>
               <div className={styles.left__name_block_buttons}>
                 <InvertBtn onClick={() => { setFavorite(!favorite); return (favorite ? FavoritesStore.removeFavoriteId(id) : FavoritesStore.addFavoriteId(id)) }} style={favorite ? { fontSize: '12px', width: '120px', padding: '8px 10px', backgroundColor: 'white' } : { fontSize: '12px', width: '120px', padding: '8px 10px', backgroundColor: 'transparent' }}> {favorite ? 'В избранном' : 'В избранное'} </InvertBtn>
-                <InvertBtn onClick={() => { if (confirm('Удалить товар из корзины?')) { setBasket(!basket); return (BasketStore.removeBasketId(id)) } }} style={{ fontSize: '12px', width: '120px', padding: '8px 10px', marginLeft: '8px' }}> Удалить </InvertBtn>
+                <InvertBtn onClick={() => { if (confirm('Удалить товар из корзины?')) { setBasket(!basket); setSum((prev: number) => prev -= price); return (BasketStore.removeBasketId(id)) } }} style={{ fontSize: '12px', width: '120px', padding: '8px 10px', marginLeft: '8px' }}> Удалить </InvertBtn>
               </div>
             </div>
           </div>

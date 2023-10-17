@@ -21,6 +21,7 @@ import { fetchBrands } from '../../http/brandsAPI';
 import { isMobile } from '../../App';
 import { MobileFooter } from '../../components/Mobile/Footer';
 import { Footer } from '../../components/Footer/Footer';
+import { OfferPage } from '../OfferPage';
 
 
 

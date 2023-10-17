@@ -1,11 +1,12 @@
 import React, { useEffect, useId, useState } from 'react';
+import { YooCheckout, ICreatePayment } from '@a2seven/yoo-checkout';
 import { Header } from '../../components/Header';
 import styles from './basket.css';
 import UserStore from '../../store/UserStore';
 import BasketStore from '../../store/BasketStore';
 import BasketProdCard from '../../components/BasketProdCard/BasketProdCard';
 import { observer } from 'mobx-react-lite';
-import { ScrollRestoration } from 'react-router-dom';
+import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import { toJS } from 'mobx';
 import DeviceStore from '../../store/DeviceStore';
 import InvertBtn from '../../UI/InvertBtn/InvertBtn';
@@ -35,7 +36,7 @@ import { Combobox } from '@headlessui/react'
 import { $host } from '../../http';
 import classNames from 'classnames';
 import * as Switch from '@radix-ui/react-switch';
-import { get_boxberry_cities, get_boxberry_points, get_boxberry_price, get_boxberry_price_courier } from '../../http/outsideApi';
+import { create_yookassa_payment, get_boxberry_cities, get_boxberry_points, get_boxberry_price, get_boxberry_price_courier } from '../../http/outsideApi';
 
 
 
@@ -73,6 +74,9 @@ export const Basket = observer(() => {
   const [street, setStreet] = useState('')
   const [house, setHouse] = useState('')
   const [apartment, setApartment] = useState('')
+
+  const navigate = useNavigate()
+
 
   console.log()
 
@@ -112,6 +116,8 @@ export const Basket = observer(() => {
   }, [deliveryType])
 
   const basketList = toJS(DeviceStore.devices).filter((obj) => { return BasketStore.BASKET_LIST.includes(obj.id) })
+
+
   const basketListJSX = basketList.map(({ id, name, description, price, oldPrice, img }) => {
     return (
       <div key={id} className={styles.basket__product_card}>
@@ -172,26 +178,27 @@ export const Basket = observer(() => {
   useEffect(() => { }, [emailDevices, offer_id])
 
 
-  const sendEmailHandler = async () => {
+  const sendEmailHandler = async (payment_type: string) => {
     // await sendEmail(offer_id, name, email, tel, town, postIndex, street, house, apartment, emailDevices, payment, sum)
-    send_offer_to_me({ to: 'syncsoundshop@gmail.com', subject: "Новый заказ" }, { offer_id, name, email, tel, town, pvzAddress, postIndex, street, house, apartment, payment, sum, devices: emailDevices })
-    send_offer_to_user({ to: email, subject: "Новый заказ в фирменном магазине SyncSound.ru" }, { devices: emailDevices, name: name, offer_id: offer_id ? offer_id.toString() : '', payment: payment, sum: sum, pvzAddress })
+    send_offer_to_me({ to: ['maksim2003003@gmail.com', 'syncsoundshop@gmail.com'], subject: "Новый заказ" }, { offer_id, name, email, tel, town, pvzAddress, postIndex, street, house, apartment, payment: payment_type, sum, devices: emailDevices })
+    send_offer_to_user({ to: [email], subject: "Новый заказ в фирменном магазине SyncSound.ru" }, { devices: emailDevices, name: name, offer_id: offer_id ? offer_id.toString() : '', payment: payment, sum: sum, pvzAddress })
     emailDevices = []
     offer_id = 0
   }
 
   const emailConfirmationHandler = async () => {
     setConfirmationPending(prev => true)
-    if (isValidEmail(email) && name.length > 1 && validatePhone(tel) && basketList.length !== 0 && deliveryCities?.some((city: any) => city.Name == town) && ((street && house) || pvzAddress)) {
+    if (isValidEmail(email) && name.length > 1 && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress)) {
       setEmailConfirmationDialog(true)
       const confirmCode = randomize('0', 6)
       setCurrentConfCode(prev => confirmCode)
-      send_confirmation({ to: email, subject: 'Код подтверждения для заказа SyncSound.ru' }, { confirmation: confirmCode })
+      send_confirmation({ to: [email], subject: 'Код подтверждения для заказа SyncSound.ru' }, { confirmation: confirmCode })
       setTimeout(() => {
         // setEmailConfirmationDialog(prev => true)
         setConfirmationPending(prev => false)
       }, 500);
     } else {
+      console.log(isValidEmail(email), name.length > 1, validatePhone(tel), basketList.length !== 0, deliveryCities?.some((city: any) => city.Name == town), pvzAddress)
       ErrorStore.setError(WARNING_ALERT, "Некоррекные данные! Заполните все поля!")
     }
   }
@@ -219,13 +226,14 @@ export const Basket = observer(() => {
 
   // const sum = (basketList.length > 1 ? basketList.reduce((prev, curr) => {return prev.price += curr.price}) : (basketList.length === 1 ? basketList[0].price : 0));
 
-  const addOffer = async (userEmail: string, userTel: string, userName: string, sum: number) => {
+  const addOffer = async (userEmail: string, userTel: string, userName: string, sum: number, payment: string) => {
     setOfferPending(prev => true)
     if (!isEmailConfirmed) {
       if (userEmail.length && userName.length >= 2 && validatePhone(userTel) && sum) {
         try {
-          await createOfferFn({ userName: userName, userTel: userTel, userEmail: userEmail, sum: sum }).then(data => {
+          await createOfferFn({ userName: userName, userTel: userTel, userEmail: userEmail, sum: sum, payment: payment, address: JSON.stringify({ city: town, pvz: pvzAddress, street: street, house: house, apartment: apartment }) }).then(data => {
             offer_id = data.offer.id
+            localStorage.setItem('offer_id', data.offer.id.toString())
             basketList.forEach(async (device, idx) => {
               await createOfferDeviceFn({ offerID: data.offer.id, deviceID: device.id }).then(data => {
                 const device = toJS(DeviceStore.devices).find((device) => device.id == data.offer_device.deviceId)
@@ -237,7 +245,7 @@ export const Basket = observer(() => {
                 console.log(new_device)
                 emailDevices = [...emailDevices, new_device]
                 if (idx + 1 == basketList.length) {
-                  sendEmailHandler()
+                  sendEmailHandler(`${payment}-orderID=${offer_id}`)
                 }
               })
             })
@@ -257,6 +265,35 @@ export const Basket = observer(() => {
       ErrorStore.setError(WARNING_ALERT, "Подтвердите email!")
       setOfferPending(prev => false)
     }
+  }
+
+  const shopID = process.env.REACT_APP_SHOP_ID ?? ""
+  const secretKey = process.env.REACT_APP_PAYMENT_SECRET_KEY ?? ""
+
+  const createYooKassaPayment = async () => {
+    // const checkout = new YooCheckout({ shopId: shopID, secretKey: secretKey });
+    // const idempotenceKey = 'jnsdvskv-dakdaskdjn-asclnkajdn'
+    const createPayload: ICreatePayment = {
+      amount: {
+        value: `${sum + deliveryPrice}`,
+        currency: 'RUB'
+      },
+      confirmation: {
+        type: 'redirect',
+        return_url: 'http://localhost:3210/?payment_confirmation=true'
+      }
+    };
+
+    try {
+      const checkout: any = await create_yookassa_payment(createPayload)
+      console.log(checkout)
+      localStorage.setItem("payment_id", checkout.data.id)
+      addOffer(email, tel, name, sum, `${payment}-orderID=${checkout.data.id}`)
+      window.location.href = checkout.data.confirmation.confirmation_url ?? ""
+    } catch (error) {
+      console.error(error);
+    }
+
   }
 
   if (isLoading) return <Preloader />
@@ -312,7 +349,7 @@ export const Basket = observer(() => {
                   <option value="Москва">Москва</option>
                 </select> */}
                 <div className='flex flex-row items-center justify-center w-max gap-2 text-white mb-4 ml-4 exo-2'>
-                  <label className={` ${deliveryType && ' text-neutral-500 '} transition-all duration-200 `} htmlFor=""> Доставка в ПВЗ </label>
+                  <label className={` ${deliveryType && ' text-neutral-500 '} transition-all duration-200 `} htmlFor=""> {isMobile ? "Пункт выдачи" : "Доставка в ПВЗ"} </label>
                   <Switch.Root
                     onClick={e => setDeliveryType(!deliveryType)}
                     className="w-[42px] h-[25px] bg-[#131313] rounded-full relative shadow-[0_2px_10px] shadow-blackA7 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-pointer"
@@ -322,7 +359,7 @@ export const Basket = observer(() => {
                     <Switch.Thumb
                       className="block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA7 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
                   </Switch.Root>
-                  <label className={` ${!deliveryType && ' text-neutral-500 '} transition-all duration-200 `} htmlFor=""> Курьерская доставка </label>
+                  <label className={` ${!deliveryType && ' text-neutral-500 '} transition-all duration-200 `} htmlFor=""> {isMobile ? "Курьер" : "Курьерская доставка"} </label>
                 </div>
                 <Combobox >
                   <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Город*' value={town} onChange={e => setTown(e.target.value)} autoComplete='none' />
@@ -362,7 +399,7 @@ export const Basket = observer(() => {
               <h3 className={styles.basket__block_title}>Выберите способ оплаты</h3>
               <div className={styles.basket__payment_block}>
                 <span onClick={() => setPayment(PAYMENT__WHEN_GET)} className={(payment === PAYMENT__WHEN_GET ? styles.payment_active : ' ') + ' cursor-pointer'}>При получении</span>
-                <span onClick={() => setPayment(payment)} className={(payment === PAYMENT__CARD ? styles.payment_active : ' ') + ' ' + ' cursor-pointer line-through'}>Картой онлайн </span>
+                <span onClick={() => setPayment(PAYMENT__CARD)} className={(payment === PAYMENT__CARD ? styles.payment_active : ' ') + ' ' + ' cursor-pointer'}>Картой онлайн (не работает, тестовый режим!) </span>
                 {/* <span onClick={() => setPayment(PAYMENT__WHEN_GET)} className={(payment === PAYMENT__SBP ? styles.payment_active : '') + ' ' + 'text-neutral-500 line-through'}>Система быстрых платежей (СБП)</span> */}
               </div>
               <div className='flex flex-col mt-10 justify-end items-end w-full'>
@@ -407,7 +444,14 @@ export const Basket = observer(() => {
                 <button onClick={e => {
                   if (emailConfirmationCheck()) {
                     setEmailConfirmationDialog(false)
-                    addOffer(email, tel, name, sum)
+                    if (payment === PAYMENT__WHEN_GET) {
+                      addOffer(email, tel, name, sum, payment)
+                      setTimeout(() => {
+                        window.location.href = 'http://localhost:3210/?payment_confirmation=true'
+                      }, 250);
+                    } else if (payment === PAYMENT__CARD) {
+                      createYooKassaPayment()
+                    }
                   } else {
                     setConfirmIncorrect(true)
                   }

@@ -26,7 +26,7 @@ type EmailToMeType = {
 }
 
 type EmailDataType = {
-  to: string
+  to: string[]
   subject: string
 }
 

@@ -240,6 +240,12 @@
     padding: 18px;
   }
 
+  .deviceBanner_in {
+    flex-direction: column-reverse;
+    /* height: max-content; */
+    /* padding: 18px; */
+  }
+
   .deviceBanner h1 {
     font-size: 32px !important;
   }

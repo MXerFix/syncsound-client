@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@a2seven/yoo-checkout": "^1.1.4",
     "@emailjs/browser": "^3.11.0",
     "@headlessui/react": "^1.7.17",
     "@radix-ui/colors": "^3.0.0-rc.4",
