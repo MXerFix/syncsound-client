@@ -280,7 +280,7 @@ export const Basket = observer(() => {
       },
       confirmation: {
         type: 'redirect',
-        return_url: 'http://localhost:3210/?payment_confirmation=true'
+        return_url: 'https://syncsound.ru/?payment_confirmation=true'
       }
     };
 
