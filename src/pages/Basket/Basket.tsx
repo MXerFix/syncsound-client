@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useState } from 'react';
+import React, { useDeferredValue, useEffect, useId, useState } from 'react';
 import { YooCheckout, ICreatePayment } from '@a2seven/yoo-checkout';
 import { Header } from '../../components/Header';
 import styles from './basket.css';
@@ -19,7 +19,7 @@ import { fetchDevices } from '../../http/deviceAPI';
 import PreloaderMini from '../../components/PreloaderMini/PreloaderMini';
 import { BasketList } from './components/BasketList/BasketList';
 import ErrorStore from '../../store/ErrorStore';
-import { GREEN_ALERT, WARNING_ALERT } from '../../components/ErrorModal/ErrorModal';
+import { ERROR_ALERT, GREEN_ALERT, WARNING_ALERT } from '../../components/ErrorModal/ErrorModal';
 import Preloader from '../../components/Preloader/Preloader';
 import { validatePhone } from '../../helpers/validatePhohe';
 import randomize from 'randomatic'
@@ -37,6 +37,7 @@ import { $host } from '../../http';
 import classNames from 'classnames';
 import * as Switch from '@radix-ui/react-switch';
 import { create_yookassa_payment, get_boxberry_cities, get_boxberry_points, get_boxberry_price, get_boxberry_price_courier } from '../../http/outsideApi';
+import { validateName } from '../../helpers/validateName';
 
 
 
@@ -126,7 +127,7 @@ export const Basket = observer(() => {
     )
   })
 
-  let emailDevices: emailDeviceType[] = basketList.map((device) => { return { id: device.id, name: device.name, price: device.price } })
+  let emailDevices: emailDeviceType[] = []
   let offer_id: number | null = null
 
   const deliveryPriceHandler = async (pvz_code: string, sum: string, pvz_address?: string,) => {
@@ -188,7 +189,7 @@ export const Basket = observer(() => {
 
   const emailConfirmationHandler = async () => {
     setConfirmationPending(prev => true)
-    if (isValidEmail(email) && name.length > 1 && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress)) {
+    if (isValidEmail(email) && validateName(name) && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress) && payment) {
       setEmailConfirmationDialog(true)
       const confirmCode = randomize('0', 6)
       setCurrentConfCode(prev => confirmCode)
@@ -197,8 +198,24 @@ export const Basket = observer(() => {
         // setEmailConfirmationDialog(prev => true)
         setConfirmationPending(prev => false)
       }, 500);
-    } else {
-      console.log(isValidEmail(email), name.length > 1, validatePhone(tel), basketList.length !== 0, deliveryCities?.some((city: any) => city.Name == town), pvzAddress)
+    } 
+    else if (!basketList.length) {
+      ErrorStore.setError(WARNING_ALERT, "Кажется, Ваша корзина пустая...")
+    } 
+    else if (!validateName(name)) {
+      ErrorStore.setError(WARNING_ALERT, "Некорректное ФИО!")
+    } 
+    else if (!isValidEmail(email)) {
+      ErrorStore.setError(WARNING_ALERT, "Некорректный адрес электронной почты!")
+    } 
+    else if (!validatePhone(tel)) {
+      ErrorStore.setError(WARNING_ALERT, "Некорректный номер телефона!")
+    } 
+    else if (!payment) {
+      ErrorStore.setError(WARNING_ALERT, "Выберите способ оплаты!")
+    }
+    else {
+      // console.log(isValidEmail(email), name.length > 1, validatePhone(tel), basketList.length !== 0, deliveryCities?.some((city: any) => city.Name == town), pvzAddress)
       ErrorStore.setError(WARNING_ALERT, "Некоррекные данные! Заполните все поля!")
     }
   }
@@ -293,8 +310,10 @@ export const Basket = observer(() => {
     } catch (error) {
       console.error(error);
     }
-
   }
+
+  const deferredCities = useDeferredValue(deliveryCities?.filter((city: any) => town ? city.name.toLowerCase().includes(town.toLowerCase()) : true) ?? [])
+  const deferredPVZ = useDeferredValue(deliveryPVZ?.filter((pvz) => pvz.city == town).filter((pvz: any) => pvzAddress ? pvz.address.includes(pvzAddress) : true) ?? [])
 
   if (isLoading) return <Preloader />
 
@@ -315,7 +334,7 @@ export const Basket = observer(() => {
           <div className={styles.basket_block}>
             <h3 className={styles.basket__block_title}>Внесите данные для оформления заказа</h3>
             <div className={styles.basket__person_block}>
-              <input maxLength={24} autoComplete='' onChange={e => setName(e.target.value)} defaultValue={UserStore.user.name} placeholder='Ваше имя*' required type="name" />
+              <input maxLength={72} autoComplete='' onChange={e => setName(e.target.value)} defaultValue={UserStore.user.name} placeholder='Ваше ФИО (полностью)*' required type="name" />
               <span className='w-full'>
                 <input autoComplete='email' onChange={e => setEmail(e.target.value)} defaultValue={UserStore.user.email} placeholder='Электронная почта*' required type="email" />
                 <span>
@@ -364,7 +383,7 @@ export const Basket = observer(() => {
                 <Combobox >
                   <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Город*' value={town} onChange={e => setTown(e.target.value)} autoComplete='none' />
                   <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[170px] max-h-96 '}>
-                    {deliveryCities?.filter((city: any) => town ? city.name.toLowerCase().includes(town.toLowerCase()) : true).map((city: any) =>
+                    {deferredCities.map((city: any) =>
                       <Combobox.Option key={city.code} onClick={e => setTown(city.name)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={city.name}>
                         {city.name}
                       </Combobox.Option>
@@ -385,7 +404,7 @@ export const Basket = observer(() => {
                   <Combobox >
                     <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Адрес ПВЗ*' value={pvzAddress} onChange={e => setPvzAddress(e.target.value)} autoComplete='none' />
                     <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
-                      {deliveryPVZ?.filter((pvz) => pvz.city == town).filter((pvz: any) => pvzAddress ? pvz.address.includes(pvzAddress) : true).map((pvz: any) =>
+                      {deferredPVZ.map((pvz: any) =>
                         <Combobox.Option key={pvz.code} onClick={e => deliveryPriceHandler(pvz.code, sum.toString(), pvz.address)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={pvz.address}>
                           {pvz.address}
                         </Combobox.Option>
@@ -451,6 +470,8 @@ export const Basket = observer(() => {
                       }, 250);
                     } else if (payment === PAYMENT__CARD) {
                       createYooKassaPayment()
+                    } else if (!payment) {
+                      ErrorStore.setError(WARNING_ALERT, "Пожалуйста, выберите способ оплаты")
                     }
                   } else {
                     setConfirmIncorrect(true)
