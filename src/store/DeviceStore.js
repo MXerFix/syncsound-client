@@ -1,6 +1,8 @@
-import { intercept, makeAutoObservable, toJS } from "mobx";
+import { intercept, makeAutoObservable, toJS, configure } from "mobx";
 
-
+configure({
+  enforceActions: 'never'
+})
 
 
 class DeviceStore {

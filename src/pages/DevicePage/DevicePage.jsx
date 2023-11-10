@@ -30,6 +30,7 @@ import { Stanmore2Add } from './Stanmore2Add/Stanmore2Add';
 import { Acton3Add } from './Acton3Add/Acton3Add';
 import { Acton2Add } from './Acton2Add/Acton2Add';
 import { MiddletonAdd } from './MiddletonAdd/MiddletonAdd';
+import AddPosition from './components/AddPosition/AddPosition';
 
 function chooseColor(nativeColor) {
   switch (nativeColor) {
@@ -52,6 +53,7 @@ function whatDevice(deviceName) {
     case "Acton II": { return <Acton2Add />; break }
     case "Acton III": { return <Acton3Add />; break }
     case "Middleton": { return <MiddletonAdd />; break }
+    return -1
   }
 }
 
@@ -64,6 +66,7 @@ export const DevicePage = observer(() => {
   const devicePageId = parseInt(params.id ? params.id : '')
   const [isLoading, setIsLoading] = useState(true)
   const [device, setDevice] = useState({ info: [{}], colors: [{}], paged_device: [{}], images_for_color: [{}] })
+  const [characters, setCharacters] = useState()
 
   useEffect(() => {
     fetchOneDevice(devicePageId).then(data => {
@@ -75,7 +78,6 @@ export const DevicePage = observer(() => {
   }, [])
 
   const sortColorImagesFn = (images) => {
-    console.log(images)
   }
 
   const [colorPage, setColorPage] = useState('')
@@ -83,7 +85,6 @@ export const DevicePage = observer(() => {
   const [mainImg, setMainImg] = useState('')
 
   useEffect(() => {
-    console.log(device);
     // setImgList(device.images_for_color)
     setMainImg(API_URL + '/' + device.img)
     // setColorPage(device.colors[0].color)
@@ -104,7 +105,33 @@ export const DevicePage = observer(() => {
   // const device = productsList.filter((item) => { return item.id == devicePageId })[0]
   // console.log(device);
 
-  const charactersList = device.info
+  const charactersList = device.paged_device[0].device_info ? JSON.parse(device.paged_device[0].device_info) : ''
+  const additionsList = device.paged_device[0].device_additions ? JSON.parse(device.paged_device[0].device_additions) : ''
+  // console.log(device.paged_device[0].device_info)
+  const modifyCharactersList = () => {
+    const characters = {}
+    const currCategory = ''
+    charactersList.map((character, idx) => {
+      const values = {
+        title: character.title,
+        value: character.value
+      }
+      if (character.category === currCategory) {
+        characters[character.category].push(values)
+      } else {
+        currCategory = character.category
+        characters[character.category] = []
+        characters[character.category].push(values)
+      }
+    })
+    setCharacters(characters)
+  }
+
+  useEffect(() => {
+    if (charactersList && !characters) {
+      modifyCharactersList()
+    }
+  }, [charactersList])
 
   // const [color, setColor] = useState(device.colors[0])
   const [favorite, setFavorite] = useState(false)
@@ -166,18 +193,31 @@ export const DevicePage = observer(() => {
               </div>
             </div>
           </div>
-          <div className={styles.add_block}>
-            {whatDevice(device.name)}
+          <div id='' className={styles.add_block}>
+            {whatDevice(device.name) ??
+              additionsList.map((addition, idx) => (
+                <AddPosition className='mt-32' reverse={idx % 2 === 1} header={addition.title} description={addition.description} img={process.env.NODE_ENV === "development" ? `http://localhost:3010/${addition.img}` : `${process.env.REACT_APP_API_URL}/${addition.img}`} />
+              ))
+            }
           </div>
           <div className={styles.characters}>
             <h2 className={styles.technical_characters_h2 + ' mb-10'}> ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ </h2>
             <div className={styles.technical_characters}>
-              {charactersList.map((infoItem) =>
-                <div key={infoItem.id} className={styles.characters_item}>
-                  <p className={styles.item_h}> {infoItem.title}: </p>
-                  <p> {infoItem.description} </p>
-                </div>
-              )}
+              {Object.values(characters).map((category, idx) => {
+                // console.log(Object.keys(characters)[idx])
+                // console.log(category, idx)
+                return (
+                  <div key={Object.keys(characters)[idx]} className={styles.characters_item}>
+                    <h6 className=' text-24 font-normal w-max mb-4 '> {Object.keys(characters)[idx]} </h6>
+                    {category.map((character) => (
+                      <div key={character.title} className='mb-2'>
+                        <p className={styles.item_h}> {character.title}: </p>
+                        <p> {character.value} </p>
+                      </div>
+                    ))}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>

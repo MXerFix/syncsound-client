@@ -22,6 +22,9 @@ import { isMobile } from '../../App';
 import { MobileFooter } from '../../components/Mobile/Footer';
 import { Footer } from '../../components/Footer/Footer';
 import { OfferPage } from '../OfferPage';
+import { fetchColors } from '../../http/colorsApi';
+import ColorsStore from '../../store/ColorsStore';
+import { get_boxberry_cities } from '../../http/outsideApi';
 
 
 
@@ -32,6 +35,7 @@ export const Shop = observer(() => {
     fetchTypes().then(data => TypesStore.setTypes(data))
     fetchBrands().then(data => BrandsStore.setBrands(data))
     fetchDevices().then(data => DeviceStore.setDevices(data))
+    fetchColors().then(data => ColorsStore.setColors(data))
   }, [])
 
 

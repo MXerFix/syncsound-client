@@ -1,14 +1,15 @@
 import axios from "axios";
 
+
 const $host = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:3010' : process.env.REACT_APP_API_URL,
   headers: {
     "Access-Control-Allow-Origin": "*",
   },
 });
 
 const $authHost = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:3010' : process.env.REACT_APP_API_URL,
 });
 
 const authInterceptor = config => {

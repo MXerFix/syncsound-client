@@ -86,6 +86,15 @@ body {
   background-color: #131313;
 }
 
+.bar::-webkit-scrollbar {
+  display: none;
+}
+
+.bar {
+  -ms-overflow-style: none; /* IE и Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 input {
   outline: 0;
 }
@@ -285,11 +294,11 @@ input {
   ::-webkit-scrollbar {
     display: none;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     display: none;
   }
-  
+
   ::-webkit-scrollbar-track {
     display: none;
   }

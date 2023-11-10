@@ -21,6 +21,7 @@ export type offerType = {
   userId: number | null
   userName: string
   userTel: string
+  delivery_price?: number
 }
 
 export type offerAddressType = {
@@ -71,7 +72,9 @@ export function OfferPage({ offer_id, status }: { offer_id: string, status: stri
           <div className='w-1/2 bg-[#131313] text-white p-8 rounded-2xl ml-12 '>
             <div className=' flex flex-row justify-between '>
               <h3 className='text-24 mb-2' >Заказ №{offerData?.id} <span className={` px-2 rounded-lg ${offerData?.status === 'Создан' ? 'bg-yellow-400 text-[#131313] ' : 'bg-green-600'} `}> {offerData?.status} </span> </h3>
-              <p className='text-24 mb-1'> Сумма: {offerData?.sum}₽ </p>
+              <p className='text-24 mb-1'> Сумма заказа: {offerData?.sum ?? 0}₽ </p>
+              <p className='text-24 mb-1'> Доставка: {offerData?.delivery_price ?? 0}₽ </p>
+              <p className='text-24 mb-1'> Итого: {(offerData?.sum ?? 0) + (offerData?.delivery_price ?? 0)}₽ </p>
             </div>
             <p className='text-20 mb-1'> {offerData?.userName} </p>
             <p className='text-18 mb-1'> {offerData?.userEmail} </p>
@@ -102,7 +105,9 @@ export function OfferPage({ offer_id, status }: { offer_id: string, status: stri
           <div className='w-1/2 bg-[#131313] text-white p-8 rounded-2xl ml-12 '>
             <div className=' flex flex-row justify-between '>
               <h3 className='text-24 mb-2' >Заказ №{offerData?.id} <span className={` px-2 rounded-lg ${offerData?.status === 'Ошибка' ? 'bg-red-500 text-[#131313] ' : 'bg-green-600'} `}> {offerData?.status} </span> </h3>
-              <p className='text-24 mb-1'> Сумма: {offerData?.sum}₽ </p>
+              <p className='text-24 mb-1'> Сумма заказа: {offerData?.sum ?? 0}₽ </p>
+              <p className='text-24 mb-1'> Доставка: {offerData?.delivery_price ?? 0}₽ </p>
+              <p className='text-24 mb-1'> Итого: {(offerData?.sum ?? 0) + (offerData?.delivery_price ?? 0)}₽ </p>
             </div>
             <p className='text-20 mb-1'> {offerData?.userName} </p>
             <p className='text-18 mb-1'> {offerData?.userEmail} </p>

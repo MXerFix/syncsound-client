@@ -36,8 +36,9 @@ import { Combobox } from '@headlessui/react'
 import { $host } from '../../http';
 import classNames from 'classnames';
 import * as Switch from '@radix-ui/react-switch';
-import { create_yookassa_payment, get_boxberry_cities, get_boxberry_points, get_boxberry_price, get_boxberry_price_courier } from '../../http/outsideApi';
+import { create_yookassa_payment, get_boxberry_cities, get_boxberry_points, get_boxberry_price, get_boxberry_price_courier, get_boxberry_zips } from '../../http/outsideApi';
 import { validateName } from '../../helpers/validateName';
+import BoxberryStore from '../../store/BoxberryStore';
 
 
 
@@ -55,6 +56,7 @@ export const Basket = observer(() => {
   const [deliveryCities, setDeliveryCities] = useState<any[]>()
   const [deliveryPVZTemp, setDeliveryPVZTemp] = useState<any>()
   const [deliveryPVZ, setDeliveryPVZ] = useState<any[]>()
+  const [deliveryZips, setDeliveryZips] = useState<any[]>()
   const [confirmIncorrect, setConfirmIncorrect] = useState(false)
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(false)
   const [emailConfirmationDialog, setEmailConfirmationDialog] = useState(false)
@@ -79,7 +81,6 @@ export const Basket = observer(() => {
   const navigate = useNavigate()
 
 
-  console.log()
 
   function isValidEmail(email: string) {
     return /\S+@\S+\.\S+/.test(email);
@@ -90,22 +91,40 @@ export const Basket = observer(() => {
   // const sender = new Resend('re_G7rAFVpp_4VMo7c84s5MMAfKU95sPcFKu')
   // const [basketList, setBasketList] = useState(toJS(DeviceStore.devices).filter((obj) => { return BasketStore.BASKET_LIST.includes(obj.id) }))
 
+
+  const ar: string[] = []
+  ar.sort
+
   useEffect(() => {
     fetchTypes().then(data => TypesStore.setTypes(data))
     fetchBrands().then(data => BrandsStore.setBrands(data))
     fetchDevices().then(data => DeviceStore.setDevices(data))
     const fetchDeliveryInfo = async () => {
+      setIsLoading(true)
+      setDeliveryCities(BoxberryStore.cities)
+      setDeliveryPVZ(BoxberryStore.pvzs)
+      setDeliveryZips(BoxberryStore.zips)
       try {
-        const towns = await get_boxberry_cities()
-        const pvzs = await get_boxberry_points()
-        setDeliveryCities((prev: any) => towns?.data.map((city: any) => { return { name: city.Name, code: city.Code, countryCode: city.CountryCode } }))
-        setDeliveryPVZ((prev: any) => pvzs?.data.map((pvz: any) => { return { address: pvz.Address, code: pvz.Code, city: pvz.CityName, cityCode: pvz.CityCode } }))
+        // const towns = await get_boxberry_cities()
+        // const pvzs = await get_boxberry_points()
+        // const zips = await get_boxberry_zips()
+        // setDeliveryZips((prev: any) => zips)
+        // setDeliveryCities((prev: any) => towns?.data.map((city: any) => { return { name: city.Name, code: city.Code, countryCode: city.CountryCode } }).sort((a: any, b: any) => a.name > b.name ? 1 : -1))
+        // setDeliveryPVZ((prev: any) => pvzs?.data.map((pvz: any) => { return { address: pvz.Address, code: pvz.Code, city: pvz.CityName, cityCode: pvz.CityCode } }))
       } catch (error) {
         console.log(error)
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchDeliveryInfo()
   }, [])
+
+  useEffect(() => {
+    setDeliveryCities(BoxberryStore.cities)
+    setDeliveryPVZ(BoxberryStore.pvzs)
+    setDeliveryZips(BoxberryStore.zips)
+  }, [BoxberryStore.cities, BoxberryStore.pvzs, BoxberryStore.zips])
 
   useEffect(() => {
     setPostIndex('')
@@ -130,13 +149,14 @@ export const Basket = observer(() => {
   let emailDevices: emailDeviceType[] = []
   let offer_id: number | null = null
 
+  const [isZIPCorrect, setIsZIPCorrect] = useState<boolean>(true)
+
   const deliveryPriceHandler = async (pvz_code: string, sum: string, pvz_address?: string,) => {
     setDeliveryPricePending(prev => true)
     if (!deliveryType) {
       try {
         setPvzAddress(pvz_address ?? "")
-        const response = await get_boxberry_price({ target: pvz_code, sum: sum })
-        console.log(response)
+        const response: any = await get_boxberry_price({ target: pvz_code, sum: sum })
         setDeliveryPrice(response?.data.price)
       } catch (error) {
         console.log(error)
@@ -145,9 +165,14 @@ export const Basket = observer(() => {
       }
     } else {
       try {
-        const response = await get_boxberry_price_courier({ zip: pvz_code, sum: sum })
-        console.log(response)
-        setDeliveryPrice(response?.data.price)
+        const response: any = await get_boxberry_price_courier({ zip: pvz_code, sum: sum })
+        if (!response.data.price) {
+          ErrorStore.setError(WARNING_ALERT, "Доставка по данному почтовому индексу не осуществляется!")
+          setIsZIPCorrect(false)
+        } else {
+          setDeliveryPrice(response?.data.price)
+          setIsZIPCorrect(true)
+        }
       } catch (error) {
         console.log(error)
       } finally {
@@ -156,9 +181,15 @@ export const Basket = observer(() => {
     }
   }
 
+
+
   useEffect(() => {
     if (postIndex.length == 6 && deliveryType) {
       deliveryPriceHandler(postIndex, sum.toString())
+    }
+    if (postIndex.length < 6) {
+      setIsZIPCorrect(false)
+      setDeliveryPrice('0')
     }
   }, [postIndex])
 
@@ -179,17 +210,17 @@ export const Basket = observer(() => {
   useEffect(() => { }, [emailDevices, offer_id])
 
 
-  const sendEmailHandler = async (payment_type: string) => {
+  const sendEmailHandler = async (payment_type: { type: string, yooID: string, id: string }) => {
     // await sendEmail(offer_id, name, email, tel, town, postIndex, street, house, apartment, emailDevices, payment, sum)
-    send_offer_to_me({ to: ['maksim2003003@gmail.com', 'syncsoundshop@gmail.com'], subject: "Новый заказ" }, { offer_id, name, email, tel, town, pvzAddress, postIndex, street, house, apartment, payment: payment_type, sum, devices: emailDevices })
-    send_offer_to_user({ to: [email], subject: "Новый заказ в фирменном магазине SyncSound.ru" }, { devices: emailDevices, name: name, offer_id: offer_id ? offer_id.toString() : '', payment: payment, sum: sum, pvzAddress })
+    send_offer_to_me({ to: ['maksim2003003@gmail.com'], subject: "Новый заказ" }, { offer_id, name, email, tel, town, pvzAddress, postIndex, street, house, apartment, payment: payment_type, sum, delivery_price: Number(deliveryPrice), devices: emailDevices })
+    send_offer_to_user({ to: [email], subject: "Новый заказ в фирменном магазине SyncSound.ru" }, { devices: emailDevices, name: name, offer_id: offer_id ? offer_id.toString() : '', payment: payment, sum: sum, delivery_price: Number(deliveryPrice), pvzAddress })
     emailDevices = []
     offer_id = 0
   }
 
   const emailConfirmationHandler = async () => {
     setConfirmationPending(prev => true)
-    if (isValidEmail(email) && validateName(name) && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress) && payment) {
+    if (isValidEmail(email) && isZIPCorrect && validateName(name) && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress) && payment) {
       setEmailConfirmationDialog(true)
       const confirmCode = randomize('0', 6)
       setCurrentConfCode(prev => confirmCode)
@@ -198,19 +229,19 @@ export const Basket = observer(() => {
         // setEmailConfirmationDialog(prev => true)
         setConfirmationPending(prev => false)
       }, 500);
-    } 
+    }
     else if (!basketList.length) {
       ErrorStore.setError(WARNING_ALERT, "Кажется, Ваша корзина пустая...")
-    } 
+    }
     else if (!validateName(name)) {
       ErrorStore.setError(WARNING_ALERT, "Некорректное ФИО!")
-    } 
+    }
     else if (!isValidEmail(email)) {
       ErrorStore.setError(WARNING_ALERT, "Некорректный адрес электронной почты!")
-    } 
+    }
     else if (!validatePhone(tel)) {
       ErrorStore.setError(WARNING_ALERT, "Некорректный номер телефона!")
-    } 
+    }
     else if (!payment) {
       ErrorStore.setError(WARNING_ALERT, "Выберите способ оплаты!")
     }
@@ -243,12 +274,12 @@ export const Basket = observer(() => {
 
   // const sum = (basketList.length > 1 ? basketList.reduce((prev, curr) => {return prev.price += curr.price}) : (basketList.length === 1 ? basketList[0].price : 0));
 
-  const addOffer = async (userEmail: string, userTel: string, userName: string, sum: number, payment: string) => {
+  const addOffer = async (userEmail: string, userTel: string, userName: string, sum: number, payment: { type: string, yooID: string }) => {
     setOfferPending(prev => true)
     if (!isEmailConfirmed) {
       if (userEmail.length && userName.length >= 2 && validatePhone(userTel) && sum) {
         try {
-          await createOfferFn({ userName: userName, userTel: userTel, userEmail: userEmail, sum: sum, payment: payment, address: JSON.stringify({ city: town, pvz: pvzAddress, street: street, house: house, apartment: apartment }) }).then(data => {
+          await createOfferFn({ userName: userName, userTel: userTel, userEmail: userEmail, sum: sum, delivery_price: Number(deliveryPrice), payment: payment.type, address: JSON.stringify({ city: town, pvz: pvzAddress, street: street, house: house, apartment: apartment }) }).then(data => {
             offer_id = data.offer.id
             localStorage.setItem('offer_id', data.offer.id.toString())
             basketList.forEach(async (device, idx) => {
@@ -259,10 +290,9 @@ export const Basket = observer(() => {
                   price: device.price,
                   id: device.id
                 }
-                console.log(new_device)
                 emailDevices = [...emailDevices, new_device]
                 if (idx + 1 == basketList.length) {
-                  sendEmailHandler(`${payment}-orderID=${offer_id}`)
+                  sendEmailHandler({ type: payment.type, yooID: payment.yooID, id: offer_id ? offer_id.toString() : 'error no id' })
                 }
               })
             })
@@ -297,24 +327,24 @@ export const Basket = observer(() => {
       },
       confirmation: {
         type: 'redirect',
-        return_url: 'https://syncsound.ru/?payment_confirmation=true'
+        return_url: process.env.NODE_ENV === "development" ? "http://localhost:3210/?payment_confirmation=true" : 'https://syncsound.ru/?payment_confirmation=true'
       }
     };
 
     try {
       const checkout: any = await create_yookassa_payment(createPayload)
-      console.log(checkout)
       localStorage.setItem("payment_id", checkout.data.id)
-      addOffer(email, tel, name, sum, `${payment}-orderID=${checkout.data.id}`)
+      addOffer(email, tel, name, sum, { type: payment, yooID: checkout.data.id })
       window.location.href = checkout.data.confirmation.confirmation_url ?? ""
     } catch (error) {
       console.error(error);
     }
   }
 
-  const deferredCities = useDeferredValue(deliveryCities?.filter((city: any) => town ? city.name.toLowerCase().includes(town.toLowerCase()) : true) ?? [])
+  const deferredCities = useDeferredValue(deliveryCities?.filter((city: any) => town ? (city.name.slice(0, town.length).toLowerCase() === town.toLowerCase()) : true) ?? [])
   const deferredPVZ = useDeferredValue(deliveryPVZ?.filter((pvz) => pvz.city == town).filter((pvz: any) => pvzAddress ? pvz.address.includes(pvzAddress) : true) ?? [])
-
+  const deferredZips = useDeferredValue(deliveryZips?.filter(({ Zip, City }) => postIndex ? (town ? (City.toLowerCase().includes(town.toLowerCase()) && Zip.includes(postIndex)) : false) : (town ? City.toLowerCase().includes(town.toLowerCase()) : false)).map(({ Zip }) => Zip) ?? [])
+  // console.log(deferredZips)
   if (isLoading) return <Preloader />
 
   return (
@@ -334,9 +364,9 @@ export const Basket = observer(() => {
           <div className={styles.basket_block}>
             <h3 className={styles.basket__block_title}>Внесите данные для оформления заказа</h3>
             <div className={styles.basket__person_block}>
-              <input maxLength={72} autoComplete='' onChange={e => setName(e.target.value)} defaultValue={UserStore.user.name} placeholder='Ваше ФИО (полностью)*' required type="name" />
+              <input maxLength={72} autoComplete='' onChange={e => setName(e.target.value)} value={name} placeholder='Ваше ФИО (полностью)*' required type="name" />
               <span className='w-full'>
-                <input autoComplete='email' onChange={e => setEmail(e.target.value)} defaultValue={UserStore.user.email} placeholder='Электронная почта*' required type="email" />
+                <input autoComplete='email' onChange={e => setEmail(e.target.value)} value={email} placeholder='Электронная почта*' required type="email" />
                 <span>
                   {/* {isEmailConfirmed ? <div className='bg-[#33ff4e] text-center text-[#fff] py-1 px-3 mb-3 rounded-xl'> Подтвержден </div> : <button onClick={e => { emailConfirmationHandler() }} className='bg-[#ffcc33] text-[#131313] py-1 px-3 mb-3 rounded-xl'> {emailConfirmationInput ? "Отправить еще раз" : (confirmationPending ? "Отправляем..." : "Подтвердить")} </button>}
                   {emailConfirmationInput ? (
@@ -356,7 +386,7 @@ export const Basket = observer(() => {
                     setTel(prev => `+7`)
                   } else setTel(prev => `+7${e.target.value}`)
                 }
-              }} defaultValue={UserStore.user.tel} placeholder='Мобильный телефон*' required type="" />
+              }} placeholder='Мобильный телефон*' required type="" />
             </div>
           </div>
           <div className={styles.basket__double_block}>
@@ -381,19 +411,37 @@ export const Basket = observer(() => {
                   <label className={` ${!deliveryType && ' text-neutral-500 '} transition-all duration-200 `} htmlFor=""> {isMobile ? "Курьер" : "Курьерская доставка"} </label>
                 </div>
                 <Combobox >
-                  <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Город*' value={town} onChange={e => setTown(e.target.value)} autoComplete='none' />
-                  <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[170px] max-h-96 '}>
-                    {deferredCities.map((city: any) =>
-                      <Combobox.Option key={city.code} onClick={e => setTown(city.name)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={city.name}>
-                        {city.name}
-                      </Combobox.Option>
-                    )}
-                  </Combobox.Options>
+                  <Combobox.Button>
+                    <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Город*' value={town} onChange={e => setTown(e.target.value)} autoComplete='none' />
+                  </Combobox.Button>
+                  {deferredCities.length !== 0 && (
+                    <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[170px] max-h-96 '}>
+                      {deferredCities.map((city: any) =>
+                        <Combobox.Option key={city.code} onClick={e => setTown(city.name)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={city.name}>
+                          {city.name}
+                        </Combobox.Option>
+                      )}
+                    </Combobox.Options>
+                  )}
                 </Combobox>
                 {/* <input autoComplete='town' onChange={e => setTown(e.target.value)} placeholder='Город' className={styles.address__block_input + ' ' + styles.address__block_input_big} type="text" /> */}
                 {deliveryType ? (
                   <div className={` animation-content-show `}>
-                    <input autoComplete='zip' onChange={e => setPostIndex(e.target.value)} placeholder='Почтовый индекс*' className={styles.address__block_input + ' ' + styles.address__block_input_big} type="metro" />
+                    <Combobox >
+                      <Combobox.Button className={`w-full`}>
+                        <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Почтовый индекс*' value={postIndex} onChange={e => setPostIndex(e.target.value)} autoComplete='none' />
+                      </Combobox.Button>
+                      {deferredZips?.length !== 0 && (
+                        <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
+                          {deferredZips?.map((zip: string) =>
+                            <Combobox.Option key={zip} onClick={e => setPostIndex(zip)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={zip}>
+                              {zip}
+                            </Combobox.Option>
+                          )}
+                        </Combobox.Options>
+                      )}
+                    </Combobox>
+                    {/* <input autoComplete='zip' onChange={e => setPostIndex(e.target.value)} placeholder='Почтовый индекс*' className={styles.address__block_input + ' ' + styles.address__block_input_big} type="metro" /> */}
                     <input autoComplete='street' onChange={e => { setStreet(prev => e.target.value) }} required placeholder='Улица*' className={styles.address__block_input + ' ' + styles.address__block_input_big} type="street" />
                     <div className={styles.mini_inputs_box}>
                       <input onChange={e => setHouse(e.target.value)} required placeholder='Дом (корпус / строение)*' className={styles.address__block_input} type="house" />
@@ -402,14 +450,18 @@ export const Basket = observer(() => {
                   </div>
                 ) : (
                   <Combobox >
-                    <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Адрес ПВЗ*' value={pvzAddress} onChange={e => setPvzAddress(e.target.value)} autoComplete='none' />
-                    <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
-                      {deferredPVZ.map((pvz: any) =>
-                        <Combobox.Option key={pvz.code} onClick={e => deliveryPriceHandler(pvz.code, sum.toString(), pvz.address)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={pvz.address}>
-                          {pvz.address}
-                        </Combobox.Option>
-                      )}
-                    </Combobox.Options>
+                    <Combobox.Button>
+                      <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Адрес ПВЗ*' value={pvzAddress} onChange={e => setPvzAddress(e.target.value)} autoComplete='none' />
+                    </Combobox.Button>
+                    {deferredPVZ.length !== 0 && (
+                      <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
+                        {deferredPVZ.map((pvz: any) =>
+                          <Combobox.Option key={pvz.code} onClick={e => deliveryPriceHandler(pvz.code, sum.toString(), pvz.address)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={pvz.address}>
+                            {pvz.address}
+                          </Combobox.Option>
+                        )}
+                      </Combobox.Options>
+                    )}
                   </Combobox>
                 )}
               </div>
@@ -430,7 +482,7 @@ export const Basket = observer(() => {
                   )}
                 </span>
                 <span className={`exo-2 text-white ${isMobile ? "text-26 mt-6" : "text-32"} flex flex-col justify-end items-end w-full`}>
-                  Итого: {Math.ceil(Number(sum + deliveryPrice))}
+                  Итого: {deliveryType ? (isZIPCorrect ? Math.ceil(sum + Number(deliveryPrice)) : sum) : Math.ceil(sum + Number(deliveryPrice))}
                 </span>
               </div>
             </div>
@@ -464,9 +516,9 @@ export const Basket = observer(() => {
                   if (emailConfirmationCheck()) {
                     setEmailConfirmationDialog(false)
                     if (payment === PAYMENT__WHEN_GET) {
-                      addOffer(email, tel, name, sum, payment)
+                      addOffer(email, tel, name, sum, { type: payment, yooID: 'when_get' })
                       setTimeout(() => {
-                        window.location.href = 'https://syncsound.ru/?payment_confirmation=true'
+                        window.location.href = process.env.NODE_ENV === "development" ? "http://localhost:3210/?payment_confirmation=true" : 'https://syncsound.ru/?payment_confirmation=true'
                       }, 250);
                     } else if (payment === PAYMENT__CARD) {
                       createYooKassaPayment()

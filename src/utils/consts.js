@@ -1,5 +1,5 @@
 
-export const API_URL = process.env.REACT_APP_API_URL
+export const API_URL = process.env.NODE_ENV === 'development' ? "http://localhost:3010" : process.env.REACT_APP_API_URL
 
 export const ADMIN_ROUTE = "admin"
 export const SHOP_ROUTE = '/'

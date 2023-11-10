@@ -4,6 +4,7 @@ import styles from './invertbtn.css'
 
 interface InvertBtnI {
   children?: (string | string[] | ReactNode),
+  className?: string
   [propKey: string] :any
 }
 

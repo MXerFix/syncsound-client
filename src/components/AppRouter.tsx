@@ -12,7 +12,7 @@ import Preloader from './Preloader/Preloader'
 
 const AppRouter = observer(() => {
 
-  const IS_AUTH = UserStore._isAuth
+  const IS_AUTH = UserStore.isAuth
 
   const routes = (IS_AUTH ? authRoutes.map(({ path, Component }) => <Route key={path} path={path} element={Component} />) : publicRoutes.map(({ path, Component }) => <Route key={path} path={path} element={Component} />))
 

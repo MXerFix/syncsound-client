@@ -18,7 +18,7 @@ export const Auth = observer(() => {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const [isLogin, setIsLogin] = useState(false)
+  const [isLogin, setIsLogin] = useState(true)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,13 +26,13 @@ export const Auth = observer(() => {
   const click = async () => {
     setIsLoading(true)
     try {
-      let userData
+      let userData: any
       if (isLogin) {
         if (password.length >= 5) {
           userData = await login(email, password)
           UserStore.setUser(userData)
           UserStore.setIsAuth(true)
-          navigate(`/${PROFILE_ROUTE}`)
+          navigate(`/${userData.role === "ADMIN" ? process.env.ADMIN_ROUTE : PROFILE_ROUTE}`)
         } else { ErrorStore.setError(WARNING_ALERT, 'Пароль не может быть короче 8-ми символов!') }
       } else {
         if (password.length >= 8) {

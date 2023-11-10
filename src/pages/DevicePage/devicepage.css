@@ -186,10 +186,12 @@
 
 .technical_characters {
   display: flex;
-  flex-direction: row;
+  max-height: 100vh;
+  flex-direction: column;
   flex-wrap: wrap;
-  justify-content: center;
-  width: 80%;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
   margin: auto;
   padding: 0 5vw;
   gap: 18px;
@@ -216,7 +218,7 @@
 }
 
 .characters_item {
-  width: 200px;
+  width: 32%;
   color: #fff;
   font-family: "Jost", sans-serif;
   font-weight: 200;
@@ -225,6 +227,12 @@
 
 .item_h {
   font-weight: 400;
+}
+
+.add_block {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 @media (max-width: 1600px) {
@@ -305,9 +313,14 @@
 
   .technical_characters {
     flex-direction: column;
+    max-height: max-content;
     padding: 0 24px;
     align-items: start;
     justify-content: start;
+    width: 100%;
+  }
+
+  .characters_item {
     width: 100%;
   }
 }

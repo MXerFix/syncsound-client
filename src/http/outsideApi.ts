@@ -38,6 +38,15 @@ export const get_boxberry_price_courier = async ({ zip, sum }: { zip: string, su
   }
 }
 
+export const get_boxberry_zips = async () => {
+  try {
+    const {data} = await $host.get(`/api/boxberry/zip`)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const create_yookassa_payment = async (payload: any) => {
   try {
     const response = await $host.post(url + `api/payment/create`, { payload })
@@ -49,8 +58,8 @@ export const create_yookassa_payment = async (payload: any) => {
 
 export const check_yookassa_payment = async (id: string) => {
   try {
-    const response = await $host.post(url + `api/payment/check`, {id})
-    console.log(response)
+    const response = await $host.post(url + `api/payment/check`, { id })
+
     return response.data.status === 'waiting_for_capture' && response.data.paid
   } catch (error) {
     console.log(error)

@@ -39,6 +39,7 @@ export const Catalog = observer(() => {
             <button className={category === 'all' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('all')}>Все категории</button>
             <button className={category === 'Наушники' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('Наушники')}>Наушники</button>
             <button className={category === 'Акустика' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('Акустика')}>Акустика</button>
+            <button className={category === 'Аксессуары' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('Аксессуары')}>Аксессуары</button>
           </div>
           <div className={styles.catalog__header_sort}>
             <span className={styles.catalog__sort_span}></span>

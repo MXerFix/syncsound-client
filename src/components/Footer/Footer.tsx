@@ -19,6 +19,9 @@ export const Footer = () => {
         <a className=' text-neutral-400 exo-2 rounded-lg px-2 py-1 ' href={policy} target='_blank'>
           Политика обработки персональных данных
         </a>
+        <p className=' text-neutral-400 exo-2 rounded-lg px-2 py-1 ' >
+          Информация на сайте не является публичной офертой
+        </p>
       </div>
     </div>
   )

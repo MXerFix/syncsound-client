@@ -1,10 +1,13 @@
 import { observer } from 'mobx-react-lite'
 import React, { useState } from 'react'
 import Preloader from '../../../../components/Preloader/Preloader'
-import { createBrand } from '../../../../http/brandsAPI'
+import { createBrand, fetchBrands } from '../../../../http/brandsAPI'
 import InvertBtn from '../../../../UI/InvertBtn/InvertBtn'
 import styles from '../../admin.css'
 import { AddDeviceI } from '../AddDevice/AddDevice'
+import ErrorStore from '../../../../store/ErrorStore'
+import { GREEN_ALERT } from '../../../../components/ErrorModal/ErrorModal'
+import BrandsStore from '../../../../store/BrandsStore'
 
 export const AddBrand = observer(({ className, cancelFn, ...props }: AddDeviceI) => {
 
@@ -15,8 +18,10 @@ export const AddBrand = observer(({ className, cancelFn, ...props }: AddDeviceI)
     setIsLoading(true)
     try {
       await createBrand(obj)
+      ErrorStore.setError(GREEN_ALERT, "Наименование успешно добавлено!")
+      await fetchBrands().then(data => BrandsStore.setBrands(data))
     } catch (error) {
-      return error
+      console.log(error)
     } finally {
       setIsLoading(false)
     }
@@ -28,9 +33,9 @@ export const AddBrand = observer(({ className, cancelFn, ...props }: AddDeviceI)
   return (
     <div className={className}>
       <form action="" className={styles.device_add__form} >
-        <div>
+        <div className='mb-4'>
           <label htmlFor="">Бренд</label>
-          <input onChange={(e) => setBrand({name: e.target.value})} type="text" />
+          <input className='px-4 py-1 ml-2 rounded-xl' onChange={(e) => setBrand({name: e.target.value})} type="text" />
         </div>
         <div className={styles.buttons_box}>
           <InvertBtn onClick={cancelFn} > Отмена </InvertBtn>

@@ -66,7 +66,7 @@ export const Header = observer(() => {
         <img onMouseEnter={() => setBurgerState(true)} id={styles.element__burger_img} src={burger_btn} alt="" />
         {basketLength !== 0 && <span className='absolute -top-1 -right-1 bg-red-500 text-white roboto w-5 h-5 flex items-center justify-center rounded-full'> {basketLength} </span>}
         <div onMouseLeave={() => setBurgerState(false)} className={burgerState ? classnames(styles.element__burger_burger, styles.burger_active) : styles.element__burger_burger}>
-          {IS_ADMIN && <NavLink to={`../${ADMIN_ROUTE}`}>Админ-панель</NavLink>}
+          {IS_ADMIN && <NavLink to={`../${process.env.ADMIN_ROUTE}`}>Админ-панель</NavLink>}
           {IS_AUTH && <NavLink to={`../${PROFILE_ROUTE}`}>Личный кабинет</NavLink>}
           {/* {!IS_AUTH && <NavLink to={`../`} >Авторизоваться</NavLink>} */}
           <NavLink to={`../${FAVORITES_ROUTE}`}>Избранное</NavLink>
@@ -74,7 +74,7 @@ export const Header = observer(() => {
             Корзина
             {basketLength !== 0 && <span className='absolute top-1 -right-2.5 bg-red-500 opacity-100 text-white basket-span roboto w-3 h-3 flex items-center justify-center rounded-full'> {basketLength} </span>}
           </NavLink>
-          {IS_AUTH && <NavLink to={`../${LOGIN_ROUTE}`} onClick={logOut} >Выйти из профиля</NavLink>}
+          {IS_AUTH && <NavLink to={`../${IS_ADMIN ? process.env.ADMIN_LOGIN_ROUTE : LOGIN_ROUTE}`} onClick={logOut} >Выйти из профиля</NavLink>}
         </div>
       </div>
     </div>

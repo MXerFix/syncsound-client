@@ -8,6 +8,8 @@ import BrandsStore from '../../../../store/BrandsStore';
 import TypesStore from '../../../../store/TypesStore';
 import InvertBtn from '../../../../UI/InvertBtn/InvertBtn';
 import styles from '../../admin.css'
+import { fetchColors } from '../../../../http/colorsApi';
+import ColorsStore from '../../../../store/ColorsStore';
 
 const obj = {
   colors: ['black', 'brown'],
@@ -25,7 +27,6 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
   const [isLoading, setIsLoading] = useState(false)
 
 
-
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
@@ -34,6 +35,22 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
   const [type, setType] = useState('')
   const [brand, setBrand] = useState('')
   const [file, setFile] = useState('')
+  const [info_file, setInfoFile] = useState<any>('')
+  const [additions, setAdditions] = useState<any[]>([])
+  const [additionFiles, setAdditionFiles] = useState<{ number: number, file: File | null }[]>([])
+
+  const addAddition = (e: any) => {
+    e.preventDefault()
+    const newNumber = Date.now()
+    setAdditionFiles([...additionFiles, { number: newNumber, file: null }])
+    setAdditions([...additions, { title: 'Заголовок', description: 'Абзац с описанием', number: newNumber }])
+  }
+  const deleteAddition = (deleted: number) => {
+    setAdditions(additions.filter((item) => item.number !== deleted))
+  }
+  const changeAddition = (key: any, value: string, number: number) => {
+    setAdditions(additions.map((item) => item.number === number ? { ...item, [key]: value } : item))
+  }
 
   const [additionalImages, setAdditionalImages] = useState([['additional images array started from 1st index']])
 
@@ -50,30 +67,21 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
     </option>
   )
 
-  const [color, setColor] = useState([{ color: 'Введите цвет', deviceName: 'Название товара', number: Date.now() }])
-  const addColor = () => {
-    setColor([...color, { color: 'Введите цвет', deviceName: "Название товара", number: Date.now() }])
-  }
-  const deleteColor = (deleted: number) => {
-    setColor(color.filter((item) => item.number !== deleted))
-  }
-  const changeColor = (key: any, value: string, number: number) => {
-    setColor(color.map((item) => item.number === number ? { ...item, [key]: value } : item))
-  }
+  const default_colors = toJS(ColorsStore.colors).map((item) =>
+    <option key={item.id} value={item.name}>
+      {item.name}
+    </option>
+  )
 
-  const [info, setInfo] = useState([{ title: 'Название', description: 'Описание', category: 'Заголовок', number: Date.now() }])
-  const addInfo = () => {
-    setInfo([...info, { title: 'Название', description: 'Описание', category: 'Заголовок', number: Date.now() }])
-  }
-  const deleteInfo = (deleted: number) => {
-    setInfo(info.filter((item) => item.number !== deleted))
-  }
-  const changeInfo = (key: any, value: string, number: number) => {
-    setInfo(info.map((item) => item.number === number ? { ...item, [key]: value } : item))
-  }
+  const [color, setColor] = useState('')
+
 
   const selectFile = (e: any) => {
     setFile(e.target.files[0])
+  }
+
+  const selectInfoFile = (e: any) => {
+    setInfoFile(e.target.files[0])
   }
 
   const selectManyFiles = (e: any) => {
@@ -89,9 +97,7 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
     categoryName: type,
     bigDescription: bigDescription,
     img: file,
-    info: info,
     color: color,
-    additionalImages: additionalImages
   })
 
   const addDevice = async (e: any) => {
@@ -102,28 +108,36 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
     formData.append('description', description)
     formData.append('price', price)
     formData.append('oldPrice', oldPrice)
+    formData.append('color', color)
     formData.append('brandName', brand)
     formData.append('categoryName', type)
     formData.append('bigDescription', bigDescription)
     formData.append('img', file)
-    formData.append('info', JSON.stringify(info))
+    formData.append('info_file', info_file)
+    formData.append('additions', JSON.stringify(additions))
+    additionFiles.forEach((file) => {
+      if (file.file) {
+        formData.append('addition_images', file.file)
+      }
+    })
     try {
       const response = await createDevice(formData)
-      color.forEach(async (el, index) => {
-        const formData = new FormData()
-        formData.append('color', el.color)
-        formData.append('deviceName', el.deviceName)
-        for (let file of additionalImages[index + 1]) {
-          formData.append('additionalImages', file)
-        }
-        const response = await createDevice(formData)
-      })
+      // color.forEach(async (el, index) => {
+      //   const formData = new FormData()
+      //   formData.append('color', el.color)
+      //   formData.append('deviceName', el.deviceName)
+      //   for (let file of additionalImages[index + 1]) {
+      //     formData.append('additionalImages', file)
+      //   }
+      //   const response = await createDevice(formData)
+      // })
     } catch (error) {
       return console.log(error);
     } finally {
       setIsLoading(false)
     }
   }
+
 
 
   useEffect(() => {
@@ -136,14 +150,14 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
       categoryName: type,
       bigDescription: bigDescription,
       img: file,
-      info: info,
       color: color,
-      additionalImages: additionalImages
     });
-    color.forEach((el) => {
-      el.deviceName = name
-    })
-  }, [name, description, price, oldPrice, brand, type, bigDescription, file, info, color, additionalImages])
+    // color.forEach((el) => {
+    //   el.deviceName = name
+    // })
+  }, [name, description, price, oldPrice, brand, type, bigDescription, file, color])
+
+
 
 
 
@@ -196,25 +210,47 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
             </div>
             <div className={styles.add_colors}>
               <label htmlFor="">Цвет</label>
-              <button onClick={(e) => { e.preventDefault(); addColor(); }}>Добавить цвет</button>
+              <select required onChange={(e) => { setColor(e.target.value); }} name="" id="color_select">
+                <option value="">Выбрать цвет...</option>
+                {default_colors}
+              </select>
+            </div>
+            <div className=' mt-8'>
+              <label htmlFor=""> Контент на странице <span className='text-12 inline-block'>(необязательно, если верстается вручную)</span> </label>
+              <button className='text-333 bg-white rounded px-2 py-1 mb-4' onClick={e => addAddition(e)}> Добавить блок </button>
               <div>
-                {color.map((item, index) =>
-                  <div className={styles.color_box} key={item.number}>
-                    <input onChange={(e) => { changeColor('color', e.target.value, item.number); }} type="text" placeholder={item.color} />
-                    <button onClick={(e) => { e.preventDefault(); deleteColor(item.number) }} >Удалить</button>
-                    <div className={styles.more_photo_box}>
-                      <label className={styles.mini_label} htmlFor="">3 доп фото к цвету</label>
-                      <input onChange={(e) => { selectManyFiles(e) }} type="file" multiple name="additional_photos" id="" />
-                    </div>
+                {additions.map((item, idx) =>
+                  <div key={item.number} className='mb-3 flex flex-col' >
+                    <input onChange={(e) => changeAddition('title', e.target.value, item.number)} type="text" placeholder={item.title} />
+                    <textarea className='text-10 h-20 w-full' onChange={(e) => changeAddition('description', e.target.value, item.number)} placeholder={item.description} />
+                    <input accept='image/png' className='hidden' onChange={(e: any) => setAdditionFiles(additionFiles.map((i) => {
+                      if (i.number === item.number) {
+                        const result: { number: number, file: File | null } = {
+                          number: i.number,
+                          file: e.target.files[0]
+                        }
+
+                        return result
+                      } else return i
+                    }))} type="file" id={`img_${item.number}`} />
+                    <label htmlFor={`img_${item.number}`}>
+                      <p className='bg-yellow-300 text-333 px-2 py-1 rounded text-14 cursor-pointer w-max m-0'> {additionFiles.find((obj) => obj.number === item.number)?.file?.name ?? 'Изображение'}   </p>
+                    </label>
+                    <button className='bg-red-500 text-white px-1 text-14 rounded w-max ' onClick={(e) => { e.preventDefault(); deleteAddition(item.number); setAdditionFiles(additionFiles.filter((i) => item.number !== i.number)) }} > Удалить </button>
                   </div>
                 )}
               </div>
             </div>
           </div>
           <div className={styles.in_form__side}>
-            <div className={styles.add_infos}>
+            <div className={classNames(styles.add_infos, 'flex flex-col')}>
               <label htmlFor="">Характеристики</label>
-              <button onClick={(e) => { e.preventDefault(); addInfo(); }}>Добавить характеристику</button>
+              <button className='text-white'> Прикрепить файл с характеристиками в формате JSON (category, title, value) </button>
+              <input accept='application/json' className='hidden' placeholder='Выбрать файл с характеристиками' type="file" name="info_file" id="info_file" onChange={e => selectInfoFile(e)} />
+              <label className='cursor-pointer bg-white px-2 py-1 rounded' htmlFor="info_file">
+                <p className='text-333 text-18 w-max '> {info_file ? info_file.name : 'Выбрать файл с характеристиками'} </p>
+              </label>
+              {/* <button onClick={(e) => { e.preventDefault(); addInfo(); }}>Добавить характеристику</button>
               <div>
                 {info.map((item) =>
                   <div key={item.number}>
@@ -233,7 +269,7 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
                     <button onClick={(e) => { e.preventDefault(); deleteInfo(item.number) }} > Удалить </button>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

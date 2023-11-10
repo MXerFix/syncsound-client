@@ -13,16 +13,31 @@ import UserStore from './store/UserStore'
 import Preloader from './components/Preloader/Preloader'
 import { ERROR_ALERT, ErrorModal, GREEN_ALERT } from './components/ErrorModal/ErrorModal'
 import ErrorStore from './store/ErrorStore'
-import { check_yookassa_payment } from './http/outsideApi'
+import { check_yookassa_payment, get_boxberry_cities, get_boxberry_points, get_boxberry_zips } from './http/outsideApi'
 import { change_offer_status } from './http/offerAPI'
 import { OFFER_ERROR, PAYED } from './offerStatus'
 import { OfferPage } from './pages/OfferPage'
+import BoxberryStore from './store/BoxberryStore'
+import { toJS } from 'mobx'
 
 export const isMobile = window.innerWidth < 720
 
 const App = observer(() => {
 
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetch = async () => {
+      await get_boxberry_cities()
+        .then(data => BoxberryStore.setCities(data?.data.map((city: any) => { return { name: city.Name, code: city.Code, countryCode: city.CountryCode } }).sort((a: any, b: any) => a.name > b.name ? 1 : -1)))
+      await get_boxberry_points()
+        .then(data => BoxberryStore.setPvzs(data?.data.map((pvz: any) => { return { address: pvz.Address, code: pvz.Code, city: pvz.CityName, cityCode: pvz.CityCode } })))
+      await get_boxberry_zips()
+        .then(data => BoxberryStore.setZips(data?.data))
+    }
+    fetch()
+  }, [])
+
   const [orderPage, setOrderPage] = useState({
     is_open: false,
     status: '',
@@ -72,6 +87,7 @@ const App = observer(() => {
 
 
 
+
   useEffect(() => {
     if (token) {
       setTimeout(() => {
@@ -92,7 +108,6 @@ const App = observer(() => {
   if (loading) return (<Preloader />)
 
   if (orderPage.is_open) {
-    console.log(1)
     return (
       <>
         <OfferPage offer_id={orderPage.offer_id} status={orderPage.status} />

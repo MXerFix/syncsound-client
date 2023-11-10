@@ -5,13 +5,18 @@ export const createOfferFn = async offer => {
   return data;
 };
 
+export const get_all_offers = async () => {
+  const { data } = await $authHost.get("/api/offer/getoffers");
+  return data;
+};
+
 export const createOfferDeviceFn = async device => {
   const { data } = await $host.post("/api/offer/addofferdevice", device);
   return data;
 };
 
 export const change_offer_status = async ({ id, status }) => {
-  const { data } = await $host.post("api/offer/changeofferstatus", {
+  const { data } = await $host.post("/api/offer/changeofferstatus", {
     id,
     status,
   });
@@ -20,7 +25,7 @@ export const change_offer_status = async ({ id, status }) => {
 
 export const get_offer = async (id) => {
   try {
-    const { data } = await $host.post(`api/offer`, { id });
+    const { data } = await $host.post(`/api/offer`, { id });
     return data;
   } catch (error) {
     console.log(error)

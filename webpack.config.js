@@ -81,5 +81,5 @@ module.exports = {
     }
   },
 
-  devtool: false,
+  devtool: IS_DEV ? "eval" : false,
 };
