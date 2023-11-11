@@ -210,6 +210,12 @@ input {
   animation: spin 1.5s linear infinite;
 }
 
+.mobile-catalog-select {
+  font-size: 14px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);

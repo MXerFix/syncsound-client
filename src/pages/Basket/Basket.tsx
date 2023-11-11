@@ -429,16 +429,16 @@ export const Basket = observer(() => {
                   <div className={` animation-content-show `}>
                     <Combobox >
                       <Combobox.Button className={`w-full`}>
-                        <Combobox.Input required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Почтовый индекс*' value={postIndex} onChange={e => setPostIndex(e.target.value)} autoComplete='none' />
+                        <Combobox.Input maxLength={6} required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Почтовый индекс*' value={postIndex} onChange={e => setPostIndex(e.target.value)} autoComplete='none' />
                       </Combobox.Button>
                       {deferredZips?.length !== 0 && (
-                        <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
-                          {deferredZips?.map((zip: string) =>
-                            <Combobox.Option key={zip} onClick={e => setPostIndex(zip)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={zip}>
-                              {zip}
-                            </Combobox.Option>
-                          )}
-                        </Combobox.Options>
+                      <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
+                        {deferredZips?.map((zip: string) =>
+                          <Combobox.Option key={zip} onClick={e => setPostIndex(zip)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={zip}>
+                            {zip}
+                          </Combobox.Option>
+                        )}
+                      </Combobox.Options>
                       )}
                     </Combobox>
                     {/* <input autoComplete='zip' onChange={e => setPostIndex(e.target.value)} placeholder='Почтовый индекс*' className={styles.address__block_input + ' ' + styles.address__block_input_big} type="metro" /> */}

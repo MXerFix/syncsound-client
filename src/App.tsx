@@ -33,7 +33,7 @@ const App = observer(() => {
       await get_boxberry_points()
         .then(data => BoxberryStore.setPvzs(data?.data.map((pvz: any) => { return { address: pvz.Address, code: pvz.Code, city: pvz.CityName, cityCode: pvz.CityCode } })))
       await get_boxberry_zips()
-        .then(data => BoxberryStore.setZips(data?.data))
+        .then(data => BoxberryStore.setZips(data))
     }
     fetch()
   }, [])

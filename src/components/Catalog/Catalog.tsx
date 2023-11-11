@@ -19,14 +19,21 @@ import DeviceStore from '../../store/DeviceStore';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { isMobile } from '../../App';
+import TypesStore from '../../store/TypesStore';
+import SelectComponent from '../SelectComponent/SelectComponent';
+import BrandsStore from '../../store/BrandsStore';
 
 
 export const Catalog = observer(() => {
 
 
   const productsList = toJS(DeviceStore.devices)
+  const categories = toJS(TypesStore.types)
+  const brands = toJS(BrandsStore.brands)
+  console.log(categories)
 
   const [category, setCategory] = useState('all')
+  const [brand, setBrand] = useState('all')
   const [search, setSearch] = useState('')
 
 
@@ -35,11 +42,13 @@ export const Catalog = observer(() => {
       <h2 className='title_monts_contacts fz-48 mb-10 title-mobile'>Каталог</h2>
       <div className={styles.catalog__catalog_box}>
         <div className={styles.catalog__header}>
-          <div className={styles.catalog__header_category}>
-            <button className={category === 'all' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('all')}>Все категории</button>
+          <div className={classnames(styles.catalog__header_category, (isMobile ? 'items-center justify-center gap-4' : 'flex flex-row items-center justify-start gap-4'))}>
+            <SelectComponent state={category} setState={setCategory} title='Категории' data={categories} />
+            <SelectComponent state={brand} setState={setBrand} title='Бренды' data={brands} />
+            {/* <button className={category === 'all' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('all')}>Все категории</button>
             <button className={category === 'Наушники' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('Наушники')}>Наушники</button>
             <button className={category === 'Акустика' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('Акустика')}>Акустика</button>
-            <button className={category === 'Аксессуары' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('Аксессуары')}>Аксессуары</button>
+            <button className={category === 'Аксессуары' ? classnames(styles.header__category_btn, styles.category__btn_active) : styles.header__category_btn} onClick={() => setCategory('Аксессуары')}>Аксессуары</button> */}
           </div>
           <div className={styles.catalog__header_sort}>
             <span className={styles.catalog__sort_span}></span>
@@ -52,7 +61,7 @@ export const Catalog = observer(() => {
           </div>
         </div>
         <div className={styles.catalog__products}>
-          {category === 'all' && productsList.map(({ id, name, description, price, oldPrice, img }) => {
+          {/* {category === 'all' && productsList.map(({ id, name, description, price, oldPrice, img }) => {
             if (name && name.toLowerCase().includes(search.toLowerCase())) {
               return (
                 <div key={id} className={styles.catalog__product_item}>
@@ -63,6 +72,15 @@ export const Catalog = observer(() => {
           })}
           {category !== 'all' && productsList.map(({ id, name, description, price, oldPrice, img, categoryName }) => {
             if (categoryName === category && name && name.toLowerCase().includes(search.toLowerCase())) {
+              return (
+                <div key={id} className={styles.catalog__product_item}>
+                  <CatalogProdCard id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
+                </div>
+              )
+            }
+          })} */}
+          {productsList.map(({ id, name, description, price, oldPrice, img, categoryName, brandName }) => {
+            if ((category === 'all' ? true : categoryName === category) && (brand === 'all' ? true : brandName === brand) && name && name.toLowerCase().includes(search.toLowerCase())) {
               return (
                 <div key={id} className={styles.catalog__product_item}>
                   <CatalogProdCard id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
