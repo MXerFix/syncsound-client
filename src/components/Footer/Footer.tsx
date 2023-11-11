@@ -4,7 +4,7 @@ import policy from '../../public/shared/policy_personal.pdf'
 
 export const Footer = () => {
   return (
-    <div className=' bg-[#131313] h-max w-full flex flex-row justify-between items-center py-3  '>
+    <div className='absolute left-0 top-full bg-[#131313] h-max w-full flex flex-row justify-between items-center py-3  '>
       <div className=' text-neutral-400 exo-2 px-4 flex flex-col items-start justify-center gap-1 '>
       <p>©2023</p>
       <p>Все права защищены</p>

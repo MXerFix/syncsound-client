@@ -1,9 +1,15 @@
-import { makeAutoObservable } from "mobx"
+import { makeAutoObservable, toJS } from "mobx"
+import DeviceStore from "./DeviceStore"
+
 
 class BasketStore {
   constructor() {
-    this.basketList = (JSON.parse(localStorage.getItem('basket')) ? JSON.parse(localStorage.getItem('basket')) : [])
+    this.basketList = (JSON.parse(localStorage.getItem('basket')) ?? [])
     makeAutoObservable(this)
+  }
+
+  setBasketList(list) {
+    return this.basketList = list
   }
 
   addBasketId(id) {

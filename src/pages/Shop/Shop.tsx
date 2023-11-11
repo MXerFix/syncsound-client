@@ -31,12 +31,12 @@ import { get_boxberry_cities } from '../../http/outsideApi';
 export const Shop = observer(() => {
 
 
-  useEffect(() => {
-    fetchTypes().then(data => TypesStore.setTypes(data))
-    fetchBrands().then(data => BrandsStore.setBrands(data))
-    fetchDevices().then(data => DeviceStore.setDevices(data))
-    fetchColors().then(data => ColorsStore.setColors(data))
-  }, [])
+  // useEffect(() => {
+  //   fetchTypes().then(data => TypesStore.setTypes(data))
+  //   fetchBrands().then(data => BrandsStore.setBrands(data))
+  //   fetchDevices().then(data => DeviceStore.setDevices(data))
+  //   fetchColors().then(data => ColorsStore.setColors(data))
+  // }, [])
 
 
 

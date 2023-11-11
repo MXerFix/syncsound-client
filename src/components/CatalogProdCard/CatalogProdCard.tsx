@@ -71,21 +71,21 @@ const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img 
           <p className={styles._price}> {price}₽ </p>
           <p className={styles._oldPrice}> {oldPrice ? oldPrice + '₽' : ''} </p>
         </div>
-        <div className={classnames(styles.card__priceBox_cartBtn, 'flex flex-row items-center justify-end gap-2')}>
+        <div className={classnames(styles.card__priceBox_cartBtn, 'flex flex-row items-end justify-end gap-2')}>
           {basket && (
             <button 
-            className='flex items-center justify-center p-[18px] rounded-3xl bg-red-400'
+            className={`flex items-center justify-center ${isMobile ? 'w-12 h-12 rounded-2xl ' : 'p-[18px] rounded-3xl'} bg-red-400`}
             onClick={e => {
               e.stopPropagation();
               // e.preventDefault()
                 BasketStore.removeBasketId(id)
               setBasket(!basket)
             }} >
-              <TrashIcon color='white' className='w-10 h-10' />
+              <TrashIcon color='white' className={isMobile ? 'w-6 h-6' : 'w-10 h-10'} />
             </button>
           )}
           <InvertBtn
-            className={` ${isMobile && ' text-16 py-2 px-3 w-max '} `}
+            className={` ${isMobile && ' text-16 py-2 px-3 w-max h-12 '} ${isMobile && basket && 'w-12 h-12 rounded-2xl'} `}
             onClick={(e: any) => {
               e.stopPropagation();
               // e.preventDefault()
@@ -97,9 +97,9 @@ const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img 
                 navigate('/basket')
               }
             }}
-            style={basket ? { backgroundColor: "white", border: '0', borderRadius: '24px', content: 'В корзине' } : { backgroundColor: "black", border: '0', borderRadius: '32px', content: 'В корзину' }}
+            style={basket ? { backgroundColor: "white", border: '0', borderRadius: `${isMobile ? '' : '24px'}`, content: 'В корзине' } : { backgroundColor: "black", border: '0', borderRadius: '32px', content: 'В корзину' }}
           >
-            {basket ? <Cart className='w-9 h-9' />: 'В корзину'}
+            {basket ? <Cart className={isMobile ? 'w-6 h-6' : 'w-9 h-9'} />: 'В корзину'}
           </InvertBtn>
         </div>
       </div>

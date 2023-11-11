@@ -30,7 +30,6 @@ export const Catalog = observer(() => {
   const productsList = toJS(DeviceStore.devices)
   const categories = toJS(TypesStore.types)
   const brands = toJS(BrandsStore.brands)
-  console.log(categories)
 
   const [category, setCategory] = useState('all')
   const [brand, setBrand] = useState('all')

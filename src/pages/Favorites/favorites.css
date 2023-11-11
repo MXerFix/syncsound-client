@@ -4,11 +4,11 @@
   flex-direction: column;
   justify-content: start;
   align-items: center;
+  padding-top: 18vh;
   padding-bottom: 10vh;
 }
 
 .favorites__cards_box {
-  padding-top: 18vh;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -38,7 +38,6 @@
   }
 
   .favorites__cards_box {
-    padding-top: 10vh;
     width: 94%;
     margin: 0;
   }

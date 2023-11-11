@@ -51,6 +51,7 @@ export const Favorites = observer(() => {
         <div>
           <Header />
         </div>
+        <h2 className='title_monts_contacts fz-48 mb-10 title-mobile'>Избранное</h2>
         <div className={styles.favorites__cards_box}>
           {favoritesListJSX.length ? favoritesListJSX : (
             isPageLoading ? <PreloaderMini /> : (

@@ -14,6 +14,7 @@ import { CREATED, FINISHED, IN_DELIVERY, OFFER_ERROR, OFFER_STATUSES, PAYED, PRO
 import useOutsideClick from '../../../../hooks/useOutsideClick'
 import Preloader from '../../../../components/Preloader/Preloader'
 import { TableElement } from './components/TableElement'
+import { Cross1Icon, TrashIcon } from '@radix-ui/react-icons'
 
 export const SomeList = observer(({ className, cancelFn, listSubject, ...props }: AddDeviceI) => {
 

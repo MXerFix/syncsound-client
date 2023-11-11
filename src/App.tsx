@@ -19,6 +19,15 @@ import { OFFER_ERROR, PAYED } from './offerStatus'
 import { OfferPage } from './pages/OfferPage'
 import BoxberryStore from './store/BoxberryStore'
 import { toJS } from 'mobx'
+import { fetchTypes } from './http/typesAPI'
+import { fetchBrands } from './http/brandsAPI'
+import { fetchDevices } from './http/deviceAPI'
+import { fetchColors } from './http/colorsApi'
+import TypesStore from './store/TypesStore'
+import BrandsStore from './store/BrandsStore'
+import DeviceStore from './store/DeviceStore'
+import ColorsStore from './store/ColorsStore'
+import BasketStore from './store/BasketStore'
 
 export const isMobile = window.innerWidth < 720
 
@@ -28,6 +37,13 @@ const App = observer(() => {
 
   useEffect(() => {
     const fetch = async () => {
+      await fetchTypes().then(data => TypesStore.setTypes(data))
+      await fetchBrands().then(data => BrandsStore.setBrands(data))
+      await fetchDevices().then(data => {
+        DeviceStore.setDevices(data);
+        BasketStore.setBasketList(BasketStore.BASKET_LIST.filter((item: any) => data.some((device: any) => device.id === item)))
+      })
+      await fetchColors().then(data => ColorsStore.setColors(data))
       await get_boxberry_cities()
         .then(data => BoxberryStore.setCities(data?.data.map((city: any) => { return { name: city.Name, code: city.Code, countryCode: city.CountryCode } }).sort((a: any, b: any) => a.name > b.name ? 1 : -1)))
       await get_boxberry_points()
@@ -117,10 +133,10 @@ const App = observer(() => {
 
 
   return (
-    <>
+    <div className='content-root'>
       {ErrorStore.errorType.length ? (<ErrorModal alertType={ErrorStore.errorType} children={ErrorStore.errorMessage} />) : <></>}
       <AppRouter />
-    </>
+    </div>
   )
 })
 
