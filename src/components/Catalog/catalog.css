@@ -147,6 +147,12 @@
   font-style: italic;
 }
 
+@media (max-width: 1279px) {
+  .catalog__product_item {
+    width: 40%;
+  }
+}
+
 @media (max-width: 720px) {
   .catalog__header_search {
     display: none;

@@ -32,6 +32,12 @@
   animation: card_reRender_anim 0.75s ease;
 }
 
+@media (max-width: 1279px) {
+  .favorite__product_card {
+    width: 40%;
+  }
+}
+
 @media (max-width: 720px) {
   .favorite__product_card {
     width: 45%;

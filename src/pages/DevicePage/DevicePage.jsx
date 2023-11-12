@@ -208,7 +208,7 @@ export const DevicePage = observer(() => {
                 // console.log(category, idx)
                 return (
                   <div key={Object.keys(characters)[idx]} className={styles.characters_item}>
-                    <h6 className=' text-24 font-normal w-max mb-4 '> {Object.keys(characters)[idx]} </h6>
+                    <h6 className={` ${isMobile ? "text-22 bg-333 py-1 px-3 text-center m-auto rounded" : "text-24"} font-normal w-max max-w-full mb-4 `}> {Object.keys(characters)[idx]} </h6>
                     {category.map((character) => (
                       <div key={character.title} className='mb-2'>
                         <p className={styles.item_h}> {character.title}: </p>

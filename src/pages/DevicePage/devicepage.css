@@ -182,6 +182,7 @@
 
 .characters {
   margin-top: 128px;
+  max-width: 100%;
 }
 
 .technical_characters {
