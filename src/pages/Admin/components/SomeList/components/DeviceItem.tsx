@@ -10,6 +10,8 @@ import DeviceStore from '../../../../../store/DeviceStore';
 import ErrorStore from '../../../../../store/ErrorStore';
 import { ERROR_ALERT, GREEN_ALERT } from '../../../../../components/ErrorModal/ErrorModal';
 import { observer } from 'mobx-react-lite';
+import DeviceAddition from './DeviceAddition';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 export const DeviceItem = observer(({ device, setFetchedList }: { device: any, setFetchedList: Function }) => {
 
@@ -18,7 +20,16 @@ export const DeviceItem = observer(({ device, setFetchedList }: { device: any, s
   const [descriptionInput, setDescriptionInput] = useState<string>(device.description)
   const [priceInput, setPriceInput] = useState<string>(device.price)
   const [oldPriceInput, setOldPriceInput] = useState<string>(device.oldPrice)
+  const [bigDescriptionInput, setBigDescriptionInput] = useState<string>(device.paged_device[0].bigDescription)
+  const [deviceAdditions, setDeviceAdditions] = useState<any>(JSON.parse(device.paged_device[0].device_additions))
+  const [deviceCount, setDeviceCount] = useState<number>(device.count)
+
+  const [isAdditionsOpened, setIsAdditionsOpened] = useState(false)
+  console.log(deviceAdditions)
+
   const [pending, setPending] = useState(false)
+
+  // console.log(device)
 
 
   const resetChanges = () => {
@@ -26,6 +37,9 @@ export const DeviceItem = observer(({ device, setFetchedList }: { device: any, s
     setDescriptionInput(device.description)
     setPriceInput(device.price)
     setOldPriceInput(device.oldPrice)
+    setBigDescriptionInput(device.paged_device[0].bigDescription)
+    setDeviceAdditions(JSON.parse(device.paged_device[0].device_additions))
+    setDeviceCount(device.count)
   }
 
   const applyChanges = async () => {
@@ -36,7 +50,10 @@ export const DeviceItem = observer(({ device, setFetchedList }: { device: any, s
         name: nameInput,
         description: descriptionInput,
         price: priceInput,
-        oldPrice: oldPriceInput
+        oldPrice: oldPriceInput,
+        count: deviceCount,
+        bigDescription: bigDescriptionInput,
+        deviceAdditions: JSON.stringify(deviceAdditions)
       }).then(data => {
         DeviceStore.setDevices(data.devices)
         ErrorStore.setError(GREEN_ALERT, "Изменения успешно сохранены")
@@ -76,7 +93,7 @@ export const DeviceItem = observer(({ device, setFetchedList }: { device: any, s
   return (
     <AlertDialog.Root key={device.id}>
       <div className={styles.admin_device_card + ' mb-4'}>
-        <div className='flex flex-row items-center justify-between'>
+        <div className='flex flex-row items-start justify-between'>
           <div className='flex flex-col items-start justify-start gap-2 mb-4 w-1/2 '>
             {/* <Table.Root>
           <Table.Body className=''>
@@ -142,6 +159,34 @@ export const DeviceItem = observer(({ device, setFetchedList }: { device: any, s
                 value={oldPriceInput}
                 onChange={e => setOldPriceInput(e.target.value)} />
             </div>
+            <div className='flex flex-row items-center justify-center gap-2 w-full'>
+              <span className={` ${deviceCount ? 'bg-green-400' : 'bg-red-500'} text-333 p-2 rounded-lg w-max block whitespace-nowrap `}> {deviceCount ? 'В наличии' : 'Нет в наличии'} </span>
+              <input
+                className=' bg-333 rounded-lg border-2 border-[#222] text-white p-2 w-full'
+                type="number"
+                value={deviceCount}
+                onChange={e => setDeviceCount(Number(e.target.value))} />
+            </div>
+            <button onClick={() => setIsAdditionsOpened(!isAdditionsOpened)} className='bg-white text-333 p-2 rounded-lg flex flex-row items-center justify-center gap-1 w-32'> {isAdditionsOpened ? "Свернуть" : "Развернуть"} <ChevronDownIcon className={` ${!isAdditionsOpened && 'rotate-180'} transition duration-200 `} /> </button>
+            {isAdditionsOpened && (
+              <>
+                <div className='flex flex-row items-center justify-center gap-2 w-full'>
+                  <span className=' bg-white text-333 p-2 rounded-lg '> Большое описание </span>
+                  <textarea
+                    rows={6}
+                    className=' bg-333 rounded-lg border-2 border-[#222] text-white p-2 w-full'
+                    value={bigDescriptionInput}
+                    onChange={e => setBigDescriptionInput(e.target.value)} />
+                </div>
+                <div>
+                  {deviceAdditions.map((addition: any, idx: number) => (
+                    <div className='my-1.5'>
+                      <DeviceAddition setAdditions={setDeviceAdditions} additions={deviceAdditions} addition={addition} idx={idx} />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
           <div>
             <img className='max-h-[280px]' src={process.env.NODE_ENV === 'development' ? `http://localhost:3010/${device.img}` : `${process.env.REACT_APP_API_URL}/static/${device.img}`} alt="" />
@@ -149,9 +194,9 @@ export const DeviceItem = observer(({ device, setFetchedList }: { device: any, s
           </div>
         </div>
         <div className='flex flex-row justify-between items-center'>
-          <AlertDialog.Trigger onClick={e => {}} className="text-white hover:bg-red-600 transition shadow-blackA4 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-red-500 px-[15px] font-medium leading-none shadow-[0_2px_10px] outline-none focus:shadow-[0_0_0_2px] focus:shadow-black">
+          <AlertDialog.Trigger onClick={e => { }} className="text-white hover:bg-red-600 transition shadow-blackA4 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-red-500 px-[15px] font-medium leading-none shadow-[0_2px_10px] outline-none focus:shadow-[0_0_0_2px] focus:shadow-black">
             {/* <button onClick={e => console.log(e)} className="text-white hover:bg-red-600 transition shadow-blackA4 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-red-500 px-[15px] font-medium leading-none shadow-[0_2px_10px] outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"> */}
-              Удалить устройство
+            Удалить устройство
             {/* </button> */}
           </AlertDialog.Trigger>
           <div className=' flex flex-row justify-center items-center gap-2 '>

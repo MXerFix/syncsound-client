@@ -28,7 +28,7 @@ import { get_boxberry_cities } from '../../http/outsideApi';
 
 
 
-export const Shop = observer(() => {
+const Shop = observer(() => {
 
 
   // useEffect(() => {
@@ -54,5 +54,6 @@ export const Shop = observer(() => {
       <ScrollRestoration />
     </div>
   );
-})
+}) as React.ComponentType<any>
 
+export default Shop

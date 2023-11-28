@@ -15,10 +15,11 @@ export const createOfferDeviceFn = async device => {
   return data;
 };
 
-export const change_offer_status = async ({ id, status }) => {
+export const change_offer_status = async ({ id, status, trackNum }) => {
   const { data } = await $host.post("/api/offer/changeofferstatus", {
     id,
     status,
+    trackNum
   });
   return data;
 };

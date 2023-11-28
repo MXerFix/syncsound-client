@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
-import { ScrollRestoration, useLocation, useParams } from 'react-router-dom';
+import { ScrollRestoration, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ucFirst } from '../..';
 import { isMobile } from '../../App';
 import { Header } from '../../components/Header';
@@ -17,7 +17,7 @@ import DeviceStore from '../../store/DeviceStore';
 import FavoritesStore from '../../store/FavoritesStore';
 import TypesStore from '../../store/TypesStore';
 import InvertBtn from '../../UI/InvertBtn/InvertBtn';
-import { API_URL, COLOR_BLACK, COLOR_BROWN, COLOR_GREY, COLOR_WHITE, EMBERTON, KULBURN, MAJOR_2, MAJOR_3, MAJOR_4, MID_ANC, PAGE_BLACK, PAGE_BROWN, PAGE_GREY, PAGE_WHITE } from '../../utils/consts';
+import { API_URL, COLOR_BLACK, COLOR_BROWN, COLOR_GREY, COLOR_WHITE, EMBERTON, KULBURN, MAJOR_2, MAJOR_3, MAJOR_4, MID_ANC, PAGE_BLACK, PAGE_BROWN, PAGE_GREY, PAGE_WHITE, SHOP_ROUTE } from '../../utils/consts';
 import styles from './devicepage.css';
 import Major4Add from './Major4Add/Major4Add';
 import MinANCAdd from './MidANCAdd/MinANCAdd';
@@ -31,6 +31,10 @@ import { Acton3Add } from './Acton3Add/Acton3Add';
 import { Acton2Add } from './Acton2Add/Acton2Add';
 import { MiddletonAdd } from './MiddletonAdd/MiddletonAdd';
 import AddPosition from './components/AddPosition/AddPosition';
+import { TrashIcon } from '@radix-ui/react-icons';
+import { Cart } from '../../icons/Cart';
+import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function chooseColor(nativeColor) {
   switch (nativeColor) {
@@ -53,17 +57,17 @@ function whatDevice(deviceName) {
     case "Acton II": { return <Acton2Add />; break }
     case "Acton III": { return <Acton3Add />; break }
     case "Middleton": { return <MiddletonAdd />; break }
-    return -1
+      return -1
   }
 }
 
 
 
-
-export const DevicePage = observer(() => {
+const DevicePage = observer(() => {
 
   const params = useParams()
   const devicePageId = parseInt(params.id ? params.id : '')
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [device, setDevice] = useState({ info: [{}], colors: [{}], paged_device: [{}], images_for_color: [{}] })
   const [characters, setCharacters] = useState()
@@ -133,17 +137,21 @@ export const DevicePage = observer(() => {
     }
   }, [charactersList])
 
+
+
   // const [color, setColor] = useState(device.colors[0])
   const [favorite, setFavorite] = useState(false)
   const [basket, setBasket] = useState(false)
 
+
   useEffect(() => {
     if (FavoritesStore.FAVORITES_LIST.filter((item) => { return item === device.id }).length) setFavorite(true)
-  }, [favorite])
+  }, [favorite, device])
 
   useEffect(() => {
     if (BasketStore.BASKET_LIST.filter((item) => { return item === device.id }).length) setBasket(true)
-  }, [basket])
+  }, [basket, device])
+
 
 
   if (!isLoading) {
@@ -173,7 +181,49 @@ export const DevicePage = observer(() => {
                   </div>
                 </div>
                 <div className={styles.rightSide_buttonsBlock}>
-                  <div><InvertBtn onClick={() => { setBasket(!basket); return (basket ? BasketStore.removeBasketId(device.id) : BasketStore.addBasketId(device.id)) }} className={basket ? 'br-32 let-spacing-01 bg-color_white' : 'br-32 let-spacing-01'}> {basket ? 'В корзине' : 'В корзину'} </InvertBtn></div>
+                  {device.count ? (
+                    <>
+                      <div className='flex flex-row items-center justify-center gap-2'>
+                        {basket && (
+                          <button
+                            className={`flex items-center justify-center ${isMobile ? 'w-12 h-12 rounded-2xl ' : 'p-[18px] rounded-3xl'} bg-red-400`}
+                            onClick={e => {
+                              e.stopPropagation();
+                              // e.preventDefault()
+                              BasketStore.removeBasketId(device.id)
+                              setBasket(!basket)
+                            }} >
+                            <TrashIcon color='white' className={isMobile ? 'w-6 h-6' : 'w-10 h-10'} />
+                          </button>
+                        )}
+                        <InvertBtn
+                          className={` ${isMobile && ' text-16 py-2 px-3 w-max h-12 '} ${isMobile && basket && 'w-12 h-12 rounded-2xl'} let-spacing-01 `}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // e.preventDefault()
+                            if (!basket) {
+                              setBasket(!basket);
+                              BasketStore.addBasketId(device.id)
+                              // BasketStore.removeBasketId(id)
+                            } else {
+                              navigate('/basket')
+                            }
+                          }}
+                          style={basket ? { backgroundColor: "white", border: '0', borderRadius: `${isMobile ? '' : '24px'}`, content: 'В корзине' } : { backgroundColor: "black", borderRadius: '32px', content: 'В корзину' }}
+                        >
+                          {basket ? <Cart className={isMobile ? 'w-6 h-6' : 'w-9 h-9'} /> : 'В корзину'}
+                        </InvertBtn>
+                      </div>
+                    </>
+                  ) : (
+                    <InvertBtn className='rounded-[32px] mr-4'>
+                      <Link preventScrollReset={true} onClick={() => {
+                        setTimeout(() => { document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }, (650))
+                      }} to={`../${SHOP_ROUTE}`}>
+                        Уточнить наличие
+                      </Link>
+                    </InvertBtn>
+                  )}
                   <div><InvertBtn onClick={() => { setFavorite(!favorite); return (favorite ? FavoritesStore.removeFavoriteId(device.id) : FavoritesStore.addFavoriteId(device.id)) }} className={favorite ? 'br-32 let-spacing-01 bg-color_white' : 'br-32 let-spacing-01'} > {favorite ? 'В избранном' : 'В избранное'} </InvertBtn></div>
                 </div>
               </div>
@@ -232,3 +282,5 @@ export const DevicePage = observer(() => {
   }
 
 })
+
+export default DevicePage

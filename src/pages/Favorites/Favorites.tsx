@@ -37,10 +37,10 @@ export const Favorites = observer(() => {
 
 
   const favoritesList = toJS(DeviceStore.devices).filter((obj) => { return FavoritesStore.FAVORITES_LIST.includes(obj.id) })
-  const favoritesListJSX = favoritesList.map(({ id, name, description, price, oldPrice, img }) => {
+  const favoritesListJSX = favoritesList.map(({ id, name, description, price, oldPrice, img, count, brandName }) => {
     return (
       <div key={id} className={styles.favorite__product_card}>
-        <CatalogProdCard id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
+        <CatalogProdCard brandName={brandName} count={count} id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
       </div>
     )
   })

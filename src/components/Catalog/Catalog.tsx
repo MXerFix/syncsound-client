@@ -78,11 +78,11 @@ export const Catalog = observer(() => {
               )
             }
           })} */}
-          {productsList.map(({ id, name, description, price, oldPrice, img, categoryName, brandName }) => {
+          {productsList.map(({ id, name, description, price, oldPrice, img, categoryName, brandName, count }) => {
             if ((category === 'all' ? true : categoryName === category) && (brand === 'all' ? true : brandName === brand) && name && name.toLowerCase().includes(search.toLowerCase())) {
               return (
                 <div key={id} className={styles.catalog__product_item}>
-                  <CatalogProdCard id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
+                  <CatalogProdCard brandName={brandName} count={count} id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
                 </div>
               )
             }

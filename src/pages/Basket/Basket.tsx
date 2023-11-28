@@ -46,8 +46,7 @@ export const PAYMENT__WHEN_GET = 'when_get'
 export const PAYMENT__CARD = 'card'
 export const PAYMENT__SBP = 'sbp'
 
-
-export const Basket = observer(() => {
+ const Basket = observer(() => {
 
 
   const [deliveryPricePending, setDeliveryPricePending] = useState(false)
@@ -220,7 +219,7 @@ export const Basket = observer(() => {
 
   const emailConfirmationHandler = async () => {
     setConfirmationPending(prev => true)
-    if (isValidEmail(email) && isZIPCorrect && validateName(name) && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress) && payment) {
+    if (isValidEmail(email) && (isZIPCorrect || payment === PAYMENT__WHEN_GET) && validateName(name) && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress) && payment) {
       setEmailConfirmationDialog(true)
       const confirmCode = randomize('0', 6)
       setCurrentConfCode(prev => confirmCode)
@@ -549,3 +548,5 @@ export const Basket = observer(() => {
     </Dialog.Root>
   );
 })
+
+export default Basket

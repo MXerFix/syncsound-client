@@ -281,6 +281,43 @@ input {
   .title-mobile {
     font-size: 36px;
   }
+
+  .mobile-offer-page-out-wrapper {
+    @apply h-max
+  }
+
+  .mobile-offer-page-wrapper {
+    @apply h-max px-4
+  }
+
+  .mobile-offer-page-title {
+    @apply text-28 mt-12;
+  }
+
+  /* .mobile-offer-page-sums {
+    @apply justify-end items-end
+  } */
+
+  .mobile-offer-page-sums p {
+    @apply text-20
+  }
+
+  .mobile-offer-page-div {
+    @apply flex-col-reverse gap-2;
+  }
+
+  .mobile-w-full {
+    @apply w-full m-0
+  }
+
+  .mobile-d-none {
+    display: none;
+  }
+
+  .mobile-offer-page-back {
+    @apply mb-10
+  }
+
 }
 
 .animation-content-show {

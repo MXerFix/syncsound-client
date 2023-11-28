@@ -16,6 +16,9 @@ export const editDevice = async ({
   description,
   price,
   oldPrice,
+  count,
+  bigDescription,
+  deviceAdditions
 }) => {
   const { data } = await $authHost.post("/api/device/edit", {
     id,
@@ -23,6 +26,9 @@ export const editDevice = async ({
     description,
     price,
     oldPrice,
+    count,
+    bigDescription,
+    deviceAdditions
   });
   return data;
 };

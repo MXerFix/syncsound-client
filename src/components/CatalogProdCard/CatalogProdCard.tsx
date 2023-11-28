@@ -15,13 +15,15 @@ import { Cart } from '../../icons/Cart'
 interface CatalogProdCardI {
   id: number,
   name: string,
+  brandName: string,
   description: string,
   price: number,
   oldPrice?: number,
   img: string,
+  count: number
 }
 
-const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img }: CatalogProdCardI) => {
+const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img, count, brandName }: CatalogProdCardI) => {
 
   const [favorite, setFavorite] = useState(false)
   const [basket, setBasket] = useState(false)
@@ -62,45 +64,59 @@ const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img 
           </button>
         </div>
         <div className={styles.card__mainInfo_text}>
-          <h4 className={styles.card__text_name}> {name} </h4>
+          <h4 className={styles.card__text_name}> {isMobile ? (
+            <> <span className='m-0 p-0 block'> {brandName} </span><span className='text-16 m-0 p-0 block'> {name} </span></>
+          ) : (
+            <>{brandName} {name}</>
+          )} </h4>
           <p className={styles.card__text_description}> {description.toUpperCase()} </p>
         </div>
       </div>
-      <div className={styles.card__priceInfo}>
-        <div className={styles.card__priceBox}>
-          <p className={styles._price}> {price}₽ </p>
-          <p className={styles._oldPrice}> {oldPrice ? oldPrice + '₽' : ''} </p>
-        </div>
+      <div className={styles.card__priceInfo + ' ' + `${count === 0 && isMobile && 'justify-start items-start'}`}>
+        {(count !== 0 || !isMobile) && (
+          <div className={styles.card__priceBox}>
+            <p className={styles._price}> {price}₽ </p>
+            <p className={styles._oldPrice}> {oldPrice ? oldPrice + '₽' : ''} </p>
+          </div>
+        )}
         <div className={classnames(styles.card__priceBox_cartBtn, 'flex flex-row items-end justify-end gap-2')}>
-          {basket && (
-            <button 
-            className={`flex items-center justify-center ${isMobile ? 'w-12 h-12 rounded-2xl ' : 'p-[18px] rounded-3xl'} bg-red-400`}
-            onClick={e => {
-              e.stopPropagation();
-              // e.preventDefault()
-                BasketStore.removeBasketId(id)
-              setBasket(!basket)
-            }} >
-              <TrashIcon color='white' className={isMobile ? 'w-6 h-6' : 'w-10 h-10'} />
-            </button>
+          {count ? (
+            <>
+              {basket && (
+                <button
+                  className={`flex items-center justify-center ${isMobile ? 'w-12 h-12 rounded-2xl ' : 'p-[18px] rounded-3xl'} bg-red-400`}
+                  onClick={e => {
+                    e.stopPropagation();
+                    // e.preventDefault()
+                    BasketStore.removeBasketId(id)
+                    setBasket(!basket)
+                  }} >
+                  <TrashIcon color='white' className={isMobile ? 'w-6 h-6' : 'w-10 h-10'} />
+                </button>
+              )}
+              <InvertBtn
+                className={` ${isMobile && ' text-16 py-2 px-3 w-max h-12 '} ${isMobile && basket && 'w-12 h-12 rounded-2xl'} `}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  // e.preventDefault()
+                  if (!basket) {
+                    setBasket(!basket);
+                    BasketStore.addBasketId(id)
+                    // BasketStore.removeBasketId(id)
+                  } else {
+                    navigate('/basket')
+                  }
+                }}
+                style={basket ? { backgroundColor: "white", border: '0', borderRadius: `${isMobile ? '' : '24px'}`, content: 'В корзине' } : { backgroundColor: "black", border: '0', borderRadius: '32px', content: 'В корзину' }}
+              >
+                {basket ? <Cart className={isMobile ? 'w-6 h-6' : 'w-9 h-9'} /> : 'В корзину'}
+              </InvertBtn>
+            </>
+          ) : (
+            <InvertBtn className={`w-max px-4 rounded-[32px] ${isMobile && ' text-16 py-2 px-3 w-max h-12 '} `} onClick={(e: any) => e.stopPropagation()} >
+              <a href="#contacts" className=''>Нет в наличии</a>
+            </InvertBtn>
           )}
-          <InvertBtn
-            className={` ${isMobile && ' text-16 py-2 px-3 w-max h-12 '} ${isMobile && basket && 'w-12 h-12 rounded-2xl'} `}
-            onClick={(e: any) => {
-              e.stopPropagation();
-              // e.preventDefault()
-              if (!basket) {
-                setBasket(!basket);
-                BasketStore.addBasketId(id)
-                // BasketStore.removeBasketId(id)
-              } else {
-                navigate('/basket')
-              }
-            }}
-            style={basket ? { backgroundColor: "white", border: '0', borderRadius: `${isMobile ? '' : '24px'}`, content: 'В корзине' } : { backgroundColor: "black", border: '0', borderRadius: '32px', content: 'В корзину' }}
-          >
-            {basket ? <Cart className={isMobile ? 'w-6 h-6' : 'w-9 h-9'} />: 'В корзину'}
-          </InvertBtn>
         </div>
       </div>
     </div>

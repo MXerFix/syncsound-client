@@ -147,7 +147,7 @@ export const StatusDropdown = ({ setStatusList, statusList, offerStatus, item }:
     setPending(true)
     setStatus(offer_status)
     item.status = offer_status
-    await change_offer_status({ id: item.id, status: offer_status })
+    await change_offer_status({ id: item.id, status: offer_status, trackNum: 'not in delivery' })
     await get_all_offers().then(data => OffersStore.setOffers(data)).then(() => {
       setTimeout(() => {
         setPending(false)

@@ -19,11 +19,11 @@ export const MarketOffers = observer(() => {
 
   const SALES_LIST_FILTER = toJS(DeviceStore.devices).filter((product) => {return (product.oldPrice)})
 
-  const SALES_LIST = SALES_LIST_FILTER.map(({ id, name, description, price, oldPrice, img }) => {
+  const SALES_LIST = SALES_LIST_FILTER.map(({ id, name, description, price, oldPrice, img, count, brandName }) => {
     if (category === SALES) {
       return (
         <div key={id} className={styles.marketOffers__list_item}>
-          <CatalogProdCard id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
+          <CatalogProdCard brandName={brandName} count={count} id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
         </div>
       )
     }
@@ -31,21 +31,21 @@ export const MarketOffers = observer(() => {
 
   const NEW_LIST_FILTER = toJS(DeviceStore.devices).filter((product) => {return (!product.oldPrice)})
 
-  const NEW_LIST = NEW_LIST_FILTER.map(({ id, name, description, price, oldPrice, img }) => {
+  const NEW_LIST = NEW_LIST_FILTER.map(({ id, name, description, price, oldPrice, img, count, brandName }) => {
     if (category === NEW) {
       return (
         <div key={id} className={styles.marketOffers__list_item}>
-          <CatalogProdCard id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
+          <CatalogProdCard brandName={brandName} count={count} id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
         </div>
       )
     }
   })
 
-  const TOP_LIST = toJS(DeviceStore.devices).map(({ id, name, description, price, oldPrice, img }) => {
+  const TOP_LIST = toJS(DeviceStore.devices).map(({ id, name, description, price, oldPrice, img, count, brandName }) => {
     if (category === TOP) {
       return (
         <div key={id} className={styles.marketOffers__list_item}>
-          <CatalogProdCard id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
+          <CatalogProdCard brandName={brandName} count={count} id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
         </div>
       )
     }

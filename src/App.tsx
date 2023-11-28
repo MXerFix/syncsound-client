@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Shop } from './pages/Shop/Shop'
 import { Router, Routes, Route, Navigate, BrowserRouter, createBrowserRouter, createRoutesFromElements, ScrollRestoration } from 'react-router-dom'
 import { authRoutes, publicRoutes } from './routes'
 import { Favorites } from './pages/Favorites/Favorites'
-import { Basket } from './pages/Basket/Basket'
 import AppRouter from './components/AppRouter'
 import './main.global.css'
 import { HashRouter } from 'react-router-dom'
@@ -69,7 +67,7 @@ const App = observer(() => {
       if (isconfirmation) {
         if (payment_id && offer_id) {
           if (await check_yookassa_payment(payment_id)) {
-            change_offer_status({ id: offer_id, status: PAYED })
+            change_offer_status({ id: offer_id, status: PAYED, trackNum: 'not in delivery' })
             localStorage.removeItem("payment_id")
             localStorage.removeItem("offer_id")
             setOrderPage({
@@ -78,7 +76,7 @@ const App = observer(() => {
               offer_id: offer_id
             })
           } else {
-            change_offer_status({ id: offer_id, status: OFFER_ERROR })
+            change_offer_status({ id: offer_id, status: OFFER_ERROR, trackNum: 'not in delivery' })
             localStorage.removeItem("payment_id")
             localStorage.removeItem("offer_id")
             setOrderPage({

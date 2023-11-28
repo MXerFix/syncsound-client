@@ -1,6 +1,7 @@
 const path = require("path");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
-const Dotenv = require('dotenv-webpack')
+const Dotenv = require('dotenv-webpack');
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const NODE_ENV = process.env.NODE_ENV;
 const IS_DEV = NODE_ENV == "development";
 const GLOBAL_CSS_REGEXP = /\.global\.css$/;
@@ -10,21 +11,31 @@ module.exports = {
     extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
   },
 
-  mode: NODE_ENV ? NODE_ENV : "development",
+  mode: !IS_DEV ? NODE_ENV : "development",
 
-  entry: path.resolve(__dirname, "src/index.js"),
+  entry: {
+    main: path.resolve(__dirname, "src/index.tsx")
+  },
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "index.js",
+    filename: "[name].[contenthash].js",
+    chunkFilename: "[name].chunk.[contenthash].js",
     assetModuleFilename: "assets/[name][hash][ext][query]",
-    publicPath: '/'
+    publicPath: '/',
+    clean: true
   },
 
   module: {
     rules: [
       {
+        exclude: /node_modules/,
         test: /\.[tj]sx?$/,
-        use: ["ts-loader"],
+        use: [{
+          loader: "ts-loader",
+          options: {
+            transpileOnly: true
+          }
+        }],
       },
       {
         test: /\.css$/,
@@ -67,6 +78,7 @@ module.exports = {
       path: './.env',
       safe: false,
     }),
+    new ForkTsCheckerWebpackPlugin({})
   ],
 
   devServer: {
@@ -81,5 +93,13 @@ module.exports = {
     }
   },
 
-  devtool: IS_DEV ? "eval" : false,
+  devtool: IS_DEV ? "inline-source-map" : false,
+
+  // optimization: {
+  //   splitChunks: {
+  //     filename: "[name]-chunk-[contenthash].js"
+  //   },
+  //   emitOnErrors: true
+  // }
+
 };
