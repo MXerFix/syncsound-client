@@ -9,3 +9,8 @@ export const createBrand = async (brand) => {
   const response = await $authHost.post('/api/brand', brand)
   return response
 }
+
+export const editBrand = async (brand) => {
+  const response = await $authHost.patch('/api/brand', brand)
+  return response
+}

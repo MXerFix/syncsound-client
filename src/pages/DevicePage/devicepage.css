@@ -1,7 +1,7 @@
 .deviceBanner {
   width: 100vw;
   height: 90vh;
-  background-image: url(../../public/img/auth_back.jpg);
+  background-image: url(../../public/img/auth_back.webp);
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -46,8 +46,10 @@
 }
 
 .rightSide_colorANDprice {
+  width: 95%;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -104,13 +106,13 @@
   font-weight: 200;
   font-size: 42px;
   letter-spacing: 0.1em;
-  margin-left: 96px;
+  padding-left: 20%;
 }
 
 .colorANDprice_price p span {
   position: absolute;
   color: #636363;
-  left: 180px;
+  left: -40%;
   text-decoration: line-through;
   font-size: 24px;
 }
@@ -185,20 +187,19 @@
 
 .characters {
   margin-top: 128px;
-  max-width: 100%;
+  width: 100%;
 }
 
 .technical_characters {
-  display: flex;
+  display: grid;
+  grid-template-columns: 31% 31% 31% ;
   max-height: 100vh;
-  flex-direction: column;
-  flex-wrap: wrap;
   justify-content: flex-start;
-  align-items: center;
+  align-items: start;
   width: 100%;
   margin: auto;
   padding: 0 5vw;
-  gap: 18px;
+  gap: 2rem;
 }
 
 .technical_characters_h2 {
@@ -222,7 +223,7 @@
 }
 
 .characters_item {
-  width: 32%;
+  width: 95%;
   color: #fff;
   font-family: "Jost", sans-serif;
   font-weight: 200;
@@ -296,19 +297,33 @@
     width: max-content;
   }
 
+  .rightSide_colorANDprice {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: end;
+    justify-content: start;
+    gap: 0;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+
+  .colorANDprice_color {
+    width: 100%;
+  }
+
   .colorANDprice_price {
     margin: 0;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 12px;
+    margin-bottom: 6px;
   }
 
   .colorANDprice_price p {
-    font-size: 32px !important;
+    font-size: 42px !important;
   }
 
   .colorANDprice_price p span {
     font-size: 20px !important;
-    left: 100%;
+    left: -40%;
   }
 
   .characters {
@@ -316,6 +331,7 @@
   }
 
   .technical_characters {
+    display: flex;
     flex-direction: column;
     max-height: max-content;
     padding: 0 24px;

@@ -30,6 +30,7 @@ export const BRAND_LIST = 'brand_list'
 export const DEVICE_LIST = 'device_list'
 export const TYPE_LIST = 'type_list'
 export const OFFERS_LIST = 'offers_list'
+export const COLOR_LIST = 'color_list'
 
 
 
@@ -63,6 +64,7 @@ export const Admin = observer(() => {
   const [brandForm, setBrandForm] = useState(false)
   const [typeForm, setTypeForm] = useState(false)
   const [offerList, setOfferList] = useState(false)
+  const [colorList, setColorList] = useState(false)
   const [someList, setSomeList] = useState('')
   const [list, setList] = useState(false)
 
@@ -82,6 +84,7 @@ export const Admin = observer(() => {
     setTypeForm(false)
     setSomeList('')
     setOfferList(false)
+    setColorList(false)
     setColorForm(false)
     setAnyForm(false)
   }
@@ -136,6 +139,7 @@ export const Admin = observer(() => {
                     <InvertBtn onClick={() => { setSomeList(DEVICE_LIST); setAnyForm(true) }} className={anyForm ? classNames(styles.add_btn, styles.device_add__form_disabled) : styles.add_btn} > Список устройств </InvertBtn>
                     <InvertBtn onClick={() => { setSomeList(BRAND_LIST); setAnyForm(true) }} className={anyForm ? classNames(styles.add_btn, styles.device_add__form_disabled) : styles.add_btn} > Список брендов </InvertBtn>
                     <InvertBtn onClick={() => { setSomeList(TYPE_LIST); setAnyForm(true) }} className={anyForm ? classNames(styles.add_btn, styles.device_add__form_disabled) : styles.add_btn} > Список категорий </InvertBtn>
+                    <InvertBtn onClick={() => { setSomeList(COLOR_LIST); setAnyForm(true) }} className={anyForm ? classNames(styles.add_btn, styles.device_add__form_disabled) : styles.add_btn} > Список цветов </InvertBtn>
                     <InvertBtn onClick={() => { setSomeList(OFFERS_LIST); setAnyForm(true) }} className={anyForm ? classNames(styles.add_btn, styles.device_add__form_disabled) : styles.add_btn} > Список заказов </InvertBtn>
                   </div>
                 </div>

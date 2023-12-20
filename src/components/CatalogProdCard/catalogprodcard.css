@@ -1,22 +1,119 @@
 ._card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  padding: 8px 24px 12px 24px;
-  border-radius: 24px;
+  gap: 16px;
+  padding: 20px;
+  padding-bottom: 0px;
+  /* margin-bottom: 40px; */
+  border-radius: 25px;
   width: 100%;
+  /* z-index: 2; */
   /* min-height: 60vh; */
   scroll-snap-align: start;
+  /* border:1px solid outset;
+  border-color: transparent; */
   cursor: pointer;
-  transition: all .3s;
+  transition: all 0.5s;
+  background-color: transparent;
   /* box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2); */
 }
 
 ._card:hover {
-  scale: 1.01;
-  box-shadow: 1px 1px 30px rgba(0, 0, 0, 0.2),
-              -1px -1px 30px rgba(0, 0, 0, 0.2);
+  padding: 4px 4px;
+  padding-bottom: 16px;
+  background-color: #bfbfbf;
+  /* scale: 0.95;
+  z-index: 2; */
+  /* border:solid outset; 
+  border-color: #fff;
+  border-top-width: 4px;
+  border-right-width: 4px;
+  border-left-width: 4px;
+  border-bottom-width: 12px; */
+  /* box-shadow: 1px 1px 30px rgba(0, 0, 0, 0.2),
+              -1px -1px 30px rgba(0, 0, 0, 0.2); */
 }
 
+.in_card {
+  background-color: #111;
+  padding: 16px;
+  border-radius: 24px;
+  transition: all .3s;
+}
+
+.out_card {
+  padding: 0 8px;
+  opacity: 0;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+._card:hover .out_card {
+  opacity: 1;
+}
+
+._card:hover .in_card {
+  -webkit-box-shadow: 0px 7px 12px 0px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0px 7px 12px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 7px 12px 0px rgba(0, 0, 0, 0.2);
+}
+
+.out_card__button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  /* @apply flex flex-row flex-nowrap w-max items-center justify-center gap-1; */
+}
+
+.arrow {
+  transition: all 0.3s;
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.out_card__button:hover .arrow {
+  transform: scaleX(150%);
+  transform-origin: left;
+}
+
+/* .out_card {
+  width: 102%;
+  height: 108%;
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+  z-index: -1;
+  top: -0.65%;
+  left: -1%;
+  bottom: 0;
+  right: 0;
+  background-color: #bfbfbf;
+  border-radius: 25px;
+  scale: 0.8;
+  transition: all 0.5s;
+  transform-origin: 50% 15%;
+  padding-left: 20px;
+  padding-bottom: 10px;
+  pointer-events: all;
+}
+
+._card:hover .out_card {
+  transition: all 0.3s;
+  scale: 1;
+} */
+
+/* .out_card:hover {
+  transition: all .3s;
+  scale: 1;
+  z-index: 1;
+} */
 
 .card__mainInfo_img {
   width: 100%;
@@ -32,10 +129,10 @@
   max-width: 100%;
   max-height: 45vh;
   border-radius: 24px;
-  z-index: -1;
+  z-index: 1;
 }
 
-.card__mainInfo_img button {
+.favorite__btn {
   outline: none;
   border: 0;
   background-color: transparent;
@@ -44,10 +141,11 @@
   right: 10px;
   scale: 0.8;
   cursor: pointer;
+  z-index: 3;
 }
 
 .heart_svg_1 {
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .heart_svg_2 {
@@ -56,7 +154,12 @@
   fill: rgb(255, 74, 74);
   stroke-opacity: 1;
   stroke: rgb(255, 74, 74);
-  transition: all .3s;
+  transition: all 0.3s;
+}
+
+.favorite__btn:hover .heart_svg_1 {
+  /* fill: rgb(255, 74, 74); */
+  stroke: rgb(255, 74, 74);
 }
 
 .heart_svg_2_active {
@@ -64,15 +167,13 @@
   fill: rgb(255, 74, 74);
 }
 
-
 .card__mainInfo_img button:active .heart_svg_2 {
   scale: 1;
 }
 
 .card__mainInfo_img button:active .heart_svg_1 {
-  stroke: rgb(255, 74, 74) ;
+  stroke: rgb(255, 74, 74);
 }
-
 
 .card__mainInfo_text {
   display: flex;
@@ -84,18 +185,17 @@
 }
 
 .card__text_name {
-  font-family: 'Marmelad', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 300;
   font-size: 32px;
   margin: 0;
   margin-bottom: 4px;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
 }
-
 
 .card__text_description {
   height: 48px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 300;
   font-size: 15px;
   margin: 0;
@@ -105,6 +205,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  width: 100%;
   justify-content: space-between;
 }
 
@@ -117,13 +218,13 @@
 
 ._price {
   color: #fff;
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-family: "Montserrat Alternates", sans-serif;
   font-size: 28px;
   font-weight: 300;
 }
 
 ._oldPrice {
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-family: "Montserrat Alternates", sans-serif;
   font-size: 18px;
   font-weight: 300;
   position: absolute;
@@ -134,8 +235,8 @@
 }
 
 .card__priceBox_cartBtn {
-  scale: 0.8;
-  transform-origin: right bottom;
+  /* scale: 0.8;
+  transform-origin: right bottom; */
 }
 
 .card_invertBtn {
@@ -143,7 +244,6 @@
 }
 
 @media (max-width: 720px) {
-
   ._card {
     padding: 0;
     border-radius: 0;
@@ -153,6 +253,11 @@
   ._card:hover {
     padding: 0;
     box-shadow: none;
+    background-color: transparent;
+  }
+
+  .out_card {
+    display: none;
   }
 
   .card__mainInfo_text {
@@ -185,11 +290,25 @@
   }
 
   .card__priceBox_cartBtn {
-    transform-origin: center;
+    /* transform-origin: center; */
+    padding: 0;
   }
 
   .card__mainInfo_img {
     height: 28vh;
   }
 
+  .card__color_ring {
+    display: none !important;
+  }
+
+  .in_card {
+    padding: 12px;
+    padding-bottom: 8px;
+  }
+
+  .favorite__btn {
+    top: 0;
+    right: 0;
+  }
 }

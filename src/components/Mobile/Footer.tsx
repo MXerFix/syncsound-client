@@ -27,7 +27,7 @@ export const MobileFooter = observer(() => {
   const isShopLocation = (location === '/')
 
   return (
-    <div className='fixed flex flex-row w-full bottom-0 items-center justify-between text-10 px-4 bg-transparent text-[#fff] py-2 '>
+    <div className='fixed flex flex-row w-full bottom-0 items-center justify-between text-10 px-4 bg-transparent text-[#fff] py-2 z-50 '>
       {IS_ADMIN && <NavLink to={`../${ADMIN_ROUTE}`}>Админ-панель</NavLink>}
       {/* {!IS_AUTH && <NavLink to={`../`} >Авторизоваться</NavLink>} */}
       {/* <NavLink className={'w-[18%] h-10 rounded-xl flex flex-col justify-center items-center text-center bg-[#202020] '} to={`../${IS_AUTH ? PROFILE_ROUTE : LOGIN_ROUTE}`}>

@@ -10,6 +10,7 @@ import { config } from 'process';
 import DeviceStore from '../../store/DeviceStore';
 import BasketStore from '../../store/BasketStore';
 import { observer } from 'mobx-react-lite';
+import { isMobile } from '../../App';
 
 
 export const Header = observer(() => {

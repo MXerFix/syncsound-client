@@ -57,7 +57,7 @@ export const DevicesList = observer(({ cancelFn }: AddDeviceI) => {
         <div className={styles.in_wrapper + ' mt-12 h-max'}>
           {fetchedListJSX}
         </div>
-        <InvertBtn onClick={cancelFn}> Назад </InvertBtn>
+        <InvertBtn className='fixed z-10 bottom-4 left-4' onClick={cancelFn}> Назад </InvertBtn>
       </div>
     </div>
   )

@@ -9,3 +9,8 @@ export const createType = async (type) => {
   const response = await $authHost.post('/api/type', type)
   return response
 }
+
+export const editType = async (type) => {
+  const response = await $authHost.patch('/api/type', type)
+  return response
+}

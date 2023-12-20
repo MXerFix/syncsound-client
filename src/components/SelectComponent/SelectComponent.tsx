@@ -16,7 +16,7 @@ const SelectComponent = ({ data, title, state, setState, className }: { data: an
       </Select.Icon>
     </Select.Trigger>
     <Select.Portal>
-      <Select.Content className="overflow-hidden bg-[#222] rounded-md shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)]">
+      <Select.Content className="overflow-hidden bg-[#222] z-50 rounded-md shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)]">
         <Select.ScrollUpButton className="flex items-center justify-center h-[25px] bg-333 text-white cursor-default">
           <ChevronUpIcon />
         </Select.ScrollUpButton>

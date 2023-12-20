@@ -30,6 +30,12 @@
 }
 
 @font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  src: url(./public/fonts/Montserrat/Montserrat-VariableFont_wght.ttf);
+}
+
+@font-face {
   font-family: "Montserrat Alternates";
   font-style: normal;
   font-weight: 300;
@@ -54,6 +60,20 @@
   src: url(./public/fonts/Marmelad/Marmelad-Regular.ttf);
 }
 
+@font-face {
+  font-family: 'Formular';
+  font-style: normal;
+  font-weight: normal;
+  src: url(./public/fonts/Formular/formular-regular-trial.otf);
+}
+
+@font-face {
+  font-family: 'Formular';
+  font-style: normal;
+  font-weight: 300;
+  src: url(./public/fonts/Formular/formular-light-trial.otf);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -65,7 +85,7 @@ html {
 body {
   overflow-x: hidden;
   font-family: "Roboto";
-  background-color: #2d2d2d;
+  background-color: #1d1d1d;
   margin: auto;
   padding: 0;
   position: relative;
@@ -78,7 +98,7 @@ body {
 
 ::-webkit-scrollbar {
   position: fixed;
-  background-color: #2d2d2d;
+  background-color: #1d1d1d;
   width: 5px;
 }
 
@@ -160,6 +180,10 @@ input {
 
 .mt-32 {
   margin-top: 32px;
+}
+
+.SHADOWWWWW {
+  box-shadow: -5px -5px 10px 0px rgba(0, 0, 0, 0.25) inset, 5px 5px 10px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
 #preloader {
@@ -322,6 +346,21 @@ input {
 
 .animation-content-show {
   animation: content-show 400ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.animation-tooltip {
+  animation: tooltip-show 500ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+@keyframes tooltip-show {
+  from {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .basket-span {

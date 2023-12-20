@@ -5,7 +5,7 @@ import BrandsStore from '../../../../store/BrandsStore'
 import DeviceStore from '../../../../store/DeviceStore'
 import TypesStore from '../../../../store/TypesStore'
 import InvertBtn from '../../../../UI/InvertBtn/InvertBtn'
-import { BRAND_LIST, DEVICE_LIST, OFFERS_LIST, TYPE_LIST } from '../../Admin'
+import { BRAND_LIST, COLOR_LIST, DEVICE_LIST, OFFERS_LIST, TYPE_LIST } from '../../Admin'
 import { AddDeviceI } from '../AddDevice/AddDevice'
 import { DevicesList } from './components/DevicesList'
 import { change_offer_status, get_all_offers } from '../../../../http/offerAPI'
@@ -15,6 +15,8 @@ import useOutsideClick from '../../../../hooks/useOutsideClick'
 import Preloader from '../../../../components/Preloader/Preloader'
 import { TableElement } from './components/TableElement'
 import { Cross1Icon, TrashIcon } from '@radix-ui/react-icons'
+import ColorsStore from '../../../../store/ColorsStore'
+import { SomeItem } from './components/SomeItem'
 
 export const SomeList = observer(({ className, cancelFn, listSubject, ...props }: AddDeviceI) => {
 
@@ -46,6 +48,7 @@ export const SomeList = observer(({ className, cancelFn, listSubject, ...props }
         case DEVICE_LIST: return toJS(DeviceStore.devices); break;
         case TYPE_LIST: return toJS(TypesStore.types); break;
         case OFFERS_LIST: return toJS(OffersStore.offers); break;
+        case COLOR_LIST: return toJS(ColorsStore.colors); break;
         case '': return arr; break
       }
     }
@@ -79,14 +82,7 @@ export const SomeList = observer(({ className, cancelFn, listSubject, ...props }
   }
 
   if (isFetched) {
-    const fetchedList = fetchedListState.map((item: any) =>
-      <div key={item.name} className=' text-white '>
-        <div className='flex flex-row items-center justify-center gap-2 text-white'>
-          <p className='w-8 flex items-center justify-center font-bold text-18 py-1 px-2 bg-[#222] '>{item.id}</p>
-          <p className=' w-48 font-bold text-18 py-1 px-2 bg-[#222] '>{item.name}</p>
-        </div>
-      </div>
-    )
+    const fetchedList = fetchedListState.map((item: any) => <SomeItem listSubject={listSubject} item={item} /> )
 
     if (listSubject === DEVICE_LIST) {
       return (
@@ -126,6 +122,7 @@ export const SomeList = observer(({ className, cancelFn, listSubject, ...props }
             <div className='flex flex-row items-center justify-center gap-2 text-white'>
               <p className=' w-8 flex items-center justify-center font-bold text-18 py-1 px-2 bg-[#181818] '>ID</p>
               <p className=' w-48 font-bold text-18 py-1 px-2 bg-[#181818] '>Наименование</p>
+              {fetchedListState[0].value && <p className=' w-48 font-bold text-18 py-1 px-2 bg-[#181818] '>Значение</p>}
             </div>
             {fetchedList}
           </div>

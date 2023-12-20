@@ -2,6 +2,7 @@ const path = require("path");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const Dotenv = require('dotenv-webpack');
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const NODE_ENV = process.env.NODE_ENV;
 const IS_DEV = NODE_ENV == "development";
 const GLOBAL_CSS_REGEXP = /\.global\.css$/;
@@ -78,12 +79,19 @@ module.exports = {
       path: './.env',
       safe: false,
     }),
-    new ForkTsCheckerWebpackPlugin({})
+    new ForkTsCheckerWebpackPlugin({}),
+    !IS_DEV && new TerserPlugin({
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
+    }),
   ],
 
   devServer: {
     port: 3210,
-    open: false,
+    open: true,
     hot: IS_DEV,
     historyApiFallback: true,
     headers: {
@@ -94,6 +102,7 @@ module.exports = {
   },
 
   devtool: IS_DEV ? "inline-source-map" : false,
+
 
   // optimization: {
   //   splitChunks: {

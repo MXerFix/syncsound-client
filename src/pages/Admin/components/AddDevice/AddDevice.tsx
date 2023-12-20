@@ -71,7 +71,7 @@ export const AddDevice = observer(({ className, cancelFn, ...props }: AddDeviceI
   )
 
   const default_colors = toJS(ColorsStore.colors).map((item) =>
-    <option key={item.id} value={item.name}>
+    <option key={item.id} value={item.id}>
       {item.name}
     </option>
   )

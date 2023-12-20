@@ -31,6 +31,8 @@ export const Catalog = observer(() => {
   const categories = toJS(TypesStore.types)
   const brands = toJS(BrandsStore.brands)
 
+  console.log(productsList)
+
   const [category, setCategory] = useState('all')
   const [brand, setBrand] = useState('all')
   const [search, setSearch] = useState('')
@@ -78,11 +80,11 @@ export const Catalog = observer(() => {
               )
             }
           })} */}
-          {productsList.map(({ id, name, description, price, oldPrice, img, categoryName, brandName, count }) => {
+          {productsList.map(({ id, name, description, price, oldPrice, img, categoryName, brandName, count, default_color }) => {
             if ((category === 'all' ? true : categoryName === category) && (brand === 'all' ? true : brandName === brand) && name && name.toLowerCase().includes(search.toLowerCase())) {
               return (
                 <div key={id} className={styles.catalog__product_item}>
-                  <CatalogProdCard brandName={brandName} count={count} id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} />
+                  <CatalogProdCard brandName={brandName} count={count} id={id} name={name} description={description} price={price} oldPrice={oldPrice} img={img} default_color={default_color} />
                 </div>
               )
             }

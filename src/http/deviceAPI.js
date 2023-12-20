@@ -10,6 +10,11 @@ export const fetchOneDevice = async id => {
   return data;
 };
 
+export const fetchSameDevices = async id => {
+  const { data } = await $host.get("/api/device/same/" + id);
+  return data;
+};
+
 export const editDevice = async ({
   id,
   name,

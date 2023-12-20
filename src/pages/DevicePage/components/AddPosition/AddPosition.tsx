@@ -16,7 +16,7 @@ const AddPosition = ({img, header, description, reverse, className}: AddPosition
         <img src={img} alt="" />
       </div>
       <div className={styles.addPosition_content}>
-        <h2> {header} </h2>
+        <h2> {header.toUpperCase()} </h2>
         <p> {description} </p>
       </div>
     </div>

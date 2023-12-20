@@ -6,7 +6,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url(../../public/img/auth_back.jpg);
+  background-image: url(../../public/img/auth_back.webp);
   background-repeat: no-repeat;
   background-size: cover;
 }
