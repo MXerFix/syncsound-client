@@ -51,6 +51,7 @@ const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img,
 
   const navigate = useNavigate()
 
+  console.log(default_color.value.split(';'))
 
 
   return (
@@ -97,7 +98,7 @@ const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img,
               <Tooltip.Trigger
                 className={classnames(styles.card__color_ring, 'block rounded-full border border-transparent w-10 h-10 SHADOWWWWW')}
                 style={{
-                  background: default_color.value,
+                  background: default_color.value.split(';').length >= 2 ? `linear-gradient(to right, ${default_color.value.split(';')[0]} 50%, ${default_color.value.split(';')[1]} 50%)` : default_color.value,
                   borderWidth: '1.5px',
                   borderColor: 'white',
                 }}

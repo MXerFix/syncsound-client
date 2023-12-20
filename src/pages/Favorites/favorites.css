@@ -35,8 +35,10 @@
 
 @media (max-width: 1279px) {
   .favorite__product_card {
-    width: 40%;
+    width: calc(100%/2 - 1%);
   }
+
+
 }
 
 @media (max-width: 720px) {

@@ -150,8 +150,13 @@
 
 @media (max-width: 1279px) {
   .catalog__product_item {
-    width: 40%;
+    width: calc(100%/2 - 1%);
   }
+
+  .catalog__products {
+    justify-content: start;
+  }
+
 }
 
 @media (max-width: 720px) {
