@@ -21,6 +21,7 @@ import { LazyShop } from "./pages/Shop/Shop.lazy";
 import { LazyBasket } from "./pages/Basket/Basket.lazy";
 import Shop from "./pages/Shop/Shop";
 import { DeviceLazy } from "./pages/DevicePage/Device.lazy";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 export const authRoutes = [
   {
@@ -51,6 +52,7 @@ export const authRoutes = [
     path: SHOP_ROUTE,
     Component: <Shop />,
     nodeRef: createRef(),
+    error: <NotFoundPage />
   },
   {
     path: FAVORITES_ROUTE,
@@ -78,7 +80,7 @@ export const authRoutes = [
   // }
   {
     path: process.env.ADMIN_LOGIN_ROUTE,
-    Component: <Preloader />,
+    Component: <NotFoundPage />,
     nodeRef: createRef(),
   },
 ];
@@ -91,7 +93,7 @@ export const publicRoutes = [
   // },
   {
     path: process.env.ADMIN_ROUTE,
-    Component: <Preloader />,
+    Component: <NotFoundPage />,
     nodeRef: createRef(),
   },
   {
@@ -105,7 +107,7 @@ export const publicRoutes = [
   },
   {
     path: PROFILE_ROUTE,
-    Component: <Preloader />,
+    Component: <NotFoundPage />,
     nodeRef: createRef(),
   },
   {

@@ -51,8 +51,6 @@ const CatalogProdCard = observer(({ id, name, description, price, oldPrice, img,
 
   const navigate = useNavigate()
 
-  console.log(default_color.value.split(';'))
-
 
   return (
     <Tooltip.Provider delayDuration={200}>

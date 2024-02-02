@@ -2,11 +2,14 @@ import React from 'react';
 import { renderToString } from 'react-dom/server'
 import { $host, $authHost } from './index';
 import { PAYMENT__WHEN_GET } from '../pages/Basket';
+import { isMobile } from '../App';
 
 export type emailDeviceType = {
   id: string
   name: string
   price: string
+  color: string
+  count?: number 
 }
 
 type EmailToMeType = {
@@ -53,9 +56,12 @@ export const send_offer_to_me = async (emailData: EmailDataType, emailHTMLData: 
               <p> ID: {device.id}</p>
               <p> NAME: {device.name}</p>
               <p> PRICE: {device.price}</p>
+              <p> COLOR: {device.color} </p>
+              <p> COUNT: {device.count} </p>
             </li>
           ))}
         </ul>
+        <span>Версия сайта: {isMobile ? "mobile" : "desktop"} </span>
       </div>
     )
   }
@@ -81,15 +87,17 @@ export const send_offer_to_user = async (emailData: EmailDataType, emailHTMLData
           <p>Ваш заказ на SyncSound.ru успешно создан! Наш менеджер свяжется с Вами в ближайшее время для подтверждения заказа.</p>
           <h4>Состав заказа:</h4>
           <ul>
-            {emailHTMLData.devices.map((device) => (
+            {emailHTMLData.devices.map((device: emailDeviceType) => (
               <li>
-                <p> Marshall {device.name}</p>
+                <p> Marshall {device.name} {device.color} </p>
                 <p> Стоимость: {device.price}₽</p>
+                { device.count && device.count > 1 && <p> Количество: {device.count} </p> }
               </li>
             ))}
           </ul>
-          <h4> Сумма заказа: {emailHTMLData.sum} </h4>
-          <h5> Доставка: {emailHTMLData.delivery_price} </h5>
+          <h4> Сумма заказа: {emailHTMLData.sum}₽ </h4>
+          <h5> Доставка: {emailHTMLData.delivery_price}₽ </h5>
+          <h3> Итого: {emailHTMLData.sum + emailHTMLData.delivery_price}₽ </h3>
           <h4> Способ оплаты: {(emailHTMLData.payment == PAYMENT__WHEN_GET ? "При получении" : "Картой (ЮКасса)")} </h4>
           <h4> {emailHTMLData.pvzAddress ? ` Доставка в пункт выдачи: ${emailHTMLData.pvzAddress} ` : "Доставка: Курьером"} </h4>
         </div>

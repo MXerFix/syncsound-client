@@ -14,7 +14,7 @@ const AppRouter = observer(() => {
 
   const IS_AUTH = UserStore.isAuth
 
-  const routes = (IS_AUTH ? authRoutes.map(({ path, Component }) => <Route key={path} path={path} element={Component} />) : publicRoutes.map(({ path, Component }) => <Route key={path} path={path} element={Component} />))
+  const routes = (IS_AUTH ? authRoutes.map(({ path, Component, error }) => <Route errorElement={<NotFoundPage />} key={path} path={path} element={Component} />) : publicRoutes.map(({ path, Component }) => <Route errorElement={<NotFoundPage />} key={path} path={path} element={Component} />))
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -26,7 +26,7 @@ const AppRouter = observer(() => {
 
 
   return (
-    <RouterProvider router={router} fallbackElement={<Preloader />} />
+    <RouterProvider router={router} fallbackElement={<NotFoundPage />} />
   )
 })
 

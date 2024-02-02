@@ -7,7 +7,7 @@ import InvertBtn from '../../UI/InvertBtn/InvertBtn';
 import { API_URL } from '../../utils/consts';
 import styles from './basketprodcard.css';
 import * as Dialog from '@radix-ui/react-alert-dialog';
-import { Flex } from '@radix-ui/themes';
+import { toJS } from 'mobx';
 
 interface BasketProdCardI {
   id: number,
@@ -21,7 +21,7 @@ interface BasketProdCardI {
 
 const BasketProdCard = ({ id, name, description, img, price, oldPrice, setSum }: BasketProdCardI) => {
 
-  const [counter, setCounter] = useState(1)
+  const [counter, setCounter] = useState<number>(BasketStore.basketList.filter((device_id: number) => id === device_id).length)
   const [prevCounter, setPrevCounter] = useState<number>(0)
 
   const [favorite, setFavorite] = useState(false)
@@ -36,13 +36,25 @@ const BasketProdCard = ({ id, name, description, img, price, oldPrice, setSum }:
     if (BasketStore.BASKET_LIST.filter((item: number) => { return item === id }).length) setBasket(true)
   }, [basket])
 
-  useEffect(() => {
-    if (prevCounter > counter) {
-      setSum((prev: number) => prev -= price)
-    } else if (prevCounter < counter) {
-      setSum((prev: number) => prev += price)
-    }
-  }, [counter])
+  // useEffect(() => {
+  //   if (prevCounter > counter) {
+  //     setSum((prev: number) => prev -= price)
+  //   } else if (prevCounter < counter) {
+  //     setSum((prev: number) => prev += price)
+  //   }
+  // }, [counter])
+
+  const incrementCountHandler = () => {
+    setCounter(prev => { setPrevCounter(prev); return prev + 1 })
+    BasketStore.addBasketId(id)
+    // console.log(toJS(BasketStore.basketList))
+  }
+
+  const decrementCountHandler = () => {
+    counter === 1 ? setCounter(1) : setCounter(prev => { setPrevCounter(prev); return prev - 1 })
+    BasketStore.removeOneOfId(id)
+    // console.log(toJS(BasketStore.basketList))
+  }
 
   return (
     <div className={styles.bProdCard_wrapper}>
@@ -70,9 +82,9 @@ const BasketProdCard = ({ id, name, description, img, price, oldPrice, setSum }:
             </div>
             <div className={styles.bProdCard_right}>
               <div className={styles.prodCounter_box}>
-                <button onClick={() => { counter === 1 ? setCounter(1) : setCounter(prev => { setPrevCounter(prev); return prev - 1 }) }} className={classNames(styles.counter_btn, styles.counter_minus)}> - </button>
+                <button onClick={decrementCountHandler} className={classNames(styles.counter_btn, styles.counter_minus)}> - </button>
                 <p> {counter} </p>
-                <button onClick={() => setCounter(prev => { setPrevCounter(prev); return prev + 1 })} className={classNames(styles.counter_btn, styles.counter_plus)}> + </button>
+                <button onClick={incrementCountHandler} className={classNames(styles.counter_btn, styles.counter_plus)}> + </button>
               </div>
               <div className={styles.prodPrice_box}>
                 <span> {oldPrice ? oldPrice * counter + '₽' : ''} </span>

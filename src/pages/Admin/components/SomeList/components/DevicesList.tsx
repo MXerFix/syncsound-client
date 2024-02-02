@@ -23,13 +23,13 @@ export const DevicesList = observer(({ cancelFn }: AddDeviceI) => {
 
   // console.log(toJS(DeviceStore.devices))
 
-  useEffect(() => {
-    setFetchedList(prev => DeviceStore.devices)
-    setFetchedListJSX(prev => fetchedList.map((device) =>
-      <DeviceItem setFetchedList={setFetchedList} key={device.id} device={device} />
-    ))
-    // console.log(fetchedList)
-  }, [DeviceStore.devices])
+  // useEffect(() => {
+  //   setFetchedList(prev => DeviceStore.devices)
+  //   setFetchedListJSX(prev => fetchedList.map((device) =>
+  //     <DeviceItem setFetchedList={setFetchedList} key={device.id} device={device} />
+  //   ))
+  //   // console.log(fetchedList)
+  // }, [DeviceStore.devices])
   // const clickDelete = async (id: object) => {
   //   const response = await deleteDevice({ id: id }).then(data => DeviceStore.setDevices(data))
   //   return response

@@ -46,7 +46,7 @@ export const PAYMENT__WHEN_GET = 'when_get'
 export const PAYMENT__CARD = 'card'
 export const PAYMENT__SBP = 'sbp'
 
- const Basket = observer(() => {
+const Basket = observer(() => {
 
 
   const [deliveryPricePending, setDeliveryPricePending] = useState(false)
@@ -134,16 +134,54 @@ export const PAYMENT__SBP = 'sbp'
     setDeliveryPrice('')
   }, [deliveryType])
 
-  const basketList = toJS(DeviceStore.devices).filter((obj) => { return BasketStore.BASKET_LIST.includes(obj.id) })
+  const [basketList, setBasketList] = useState(toJS(DeviceStore.devices).filter((obj) => { return BasketStore.basketList.includes(obj.id) }))
+  
+  const [basketDevicesList, setBasketDevicesList] = useState(BasketStore.basketList.map((basket_device_id: number) => DeviceStore.devices.find(({id}) => id === basket_device_id)).filter((x: any) => x !== undefined))
+  console.log(basketDevicesList)
+  useEffect(() => {
+    setBasketDevicesList(BasketStore.basketList.map((basket_device_id: number) => DeviceStore.devices.find(({id}) => id === basket_device_id)).filter((x: any) => x !== undefined))
+  }, [BasketStore.basketList])
+  useEffect(() => {
+    setBasketList(toJS(DeviceStore.devices).filter((obj) => { return BasketStore.basketList.includes(obj.id) }))
+    console.log(basketList)
+  }, [BasketStore.basketList])
+
+  useEffect(() => {
+    console.log(basketList)
+    if (!basketDevicesList) {
+      return
+    } else {
+      const prices: number[] = basketDevicesList.map((device: any) => device.price)
+      console.log(prices)
+      if (prices.length < 1) {
+        return
+      } else if (prices.length === 1) {
+        setSum(prices[0])
+      } else {
+        const sum = prices.reduce((a, b) => a + b)
+        setSum(sum)
+      }
+    }
+  }, [basketList])
 
 
-  const basketListJSX = basketList.map(({ id, name, description, price, oldPrice, img }) => {
+  const [basketListJSX, setBasketListJSX] = useState(basketList.map(({ id, name, description, price, oldPrice, img }, idx) => {
     return (
-      <div key={id} className={styles.basket__product_card}>
+      <div key={`${id}_${idx}`} className={styles.basket__product_card}>
         <BasketProdCard setSum={setSum} id={id} name={name} price={price} description={description} oldPrice={oldPrice} img={img} />
       </div>
     )
-  })
+  }))
+
+  useEffect(() => {
+    setBasketListJSX(basketList.map(({ id, name, description, price, oldPrice, img }, idx) => {
+      return (
+        <div key={`${id}_${idx}`} className={styles.basket__product_card}>
+          <BasketProdCard setSum={setSum} id={id} name={name} price={price} description={description} oldPrice={oldPrice} img={img} />
+        </div>
+      )
+    }))
+  }, [basketList])
 
   let emailDevices: emailDeviceType[] = []
   let offer_id: number | null = null
@@ -211,15 +249,20 @@ export const PAYMENT__SBP = 'sbp'
 
   const sendEmailHandler = async (payment_type: { type: string, yooID: string, id: string }) => {
     // await sendEmail(offer_id, name, email, tel, town, postIndex, street, house, apartment, emailDevices, payment, sum)
-    send_offer_to_me({ to: ['maksim2003003@gmail.com'], subject: "Новый заказ" }, { offer_id, name, email, tel, town, pvzAddress, postIndex, street, house, apartment, payment: payment_type, sum, delivery_price: Number(deliveryPrice), devices: emailDevices })
-    send_offer_to_user({ to: [email], subject: "Новый заказ в фирменном магазине SyncSound.ru" }, { devices: emailDevices, name: name, offer_id: offer_id ? offer_id.toString() : '', payment: payment, sum: sum, delivery_price: Number(deliveryPrice), pvzAddress })
-    emailDevices = []
-    offer_id = 0
+    try {
+      send_offer_to_me({ to: ['syncsoundshop@gmail.com', 'maksim2003003@gmail.com'], subject: "Новый заказ" }, { offer_id, name, email, tel, town, pvzAddress, postIndex, street, house, apartment, payment: payment_type, sum, delivery_price: Number(deliveryPrice), devices: emailDevices })
+      send_offer_to_user({ to: [email], subject: "Новый заказ в фирменном магазине SyncSound.ru" }, { devices: emailDevices, name: name, offer_id: offer_id ? offer_id.toString() : '', payment: payment, sum: sum, delivery_price: Number(deliveryPrice), pvzAddress })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      emailDevices = []
+      offer_id = 0
+    }
   }
 
   const emailConfirmationHandler = async () => {
     setConfirmationPending(prev => true)
-    if (isValidEmail(email) && (isZIPCorrect || payment === PAYMENT__WHEN_GET) && validateName(name) && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress) && payment) {
+    if (isValidEmail(email) && (isZIPCorrect || !deliveryType) && validateName(name) && validatePhone(tel) && basketList.length !== 0 && ((street && house) || pvzAddress) && payment) {
       setEmailConfirmationDialog(true)
       const confirmCode = randomize('0', 6)
       setCurrentConfCode(prev => confirmCode)
@@ -287,7 +330,9 @@ export const PAYMENT__SBP = 'sbp'
                 const new_device: emailDeviceType = {
                   name: device.name,
                   price: device.price,
-                  id: device.id
+                  id: device.id,
+                  color: device.color,
+                  count: BasketStore.basketList.filter((basket_device: number) => basket_device === device.id).length
                 }
                 emailDevices = [...emailDevices, new_device]
                 if (idx + 1 == basketList.length) {
@@ -431,13 +476,13 @@ export const PAYMENT__SBP = 'sbp'
                         <Combobox.Input maxLength={6} required className={classNames(styles.address__block_input, styles.address__block_input_big)} placeholder='Почтовый индекс*' value={postIndex} onChange={e => setPostIndex(e.target.value)} autoComplete='none' />
                       </Combobox.Button>
                       {deferredZips?.length !== 0 && (
-                      <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
-                        {deferredZips?.map((zip: string) =>
-                          <Combobox.Option key={zip} onClick={e => setPostIndex(zip)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={zip}>
-                            {zip}
-                          </Combobox.Option>
-                        )}
-                      </Combobox.Options>
+                        <Combobox.Options className={'absolute mt-2 z-10 overflow-y-scroll bar bg-[#161616] text-white rounded-2xl px-3 py-4 w-full top-[230px] max-h-96 '}>
+                          {deferredZips?.map((zip: string) =>
+                            <Combobox.Option key={zip} onClick={e => setPostIndex(zip)} className={'py-2 px-3 mt-1 hover:bg-333 transition-all duration-200 rounded-lg cursor-pointer '} value={zip}>
+                              {zip}
+                            </Combobox.Option>
+                          )}
+                        </Combobox.Options>
                       )}
                     </Combobox>
                     {/* <input autoComplete='zip' onChange={e => setPostIndex(e.target.value)} placeholder='Почтовый индекс*' className={styles.address__block_input + ' ' + styles.address__block_input_big} type="metro" /> */}
@@ -518,7 +563,7 @@ export const PAYMENT__SBP = 'sbp'
                       addOffer(email, tel, name, sum, { type: payment, yooID: 'when_get' })
                       setTimeout(() => {
                         window.location.href = process.env.NODE_ENV === "development" ? "http://localhost:3210/?payment_confirmation=true" : 'https://syncsound.ru/?payment_confirmation=true'
-                      }, 250);
+                      }, 2000);
                     } else if (payment === PAYMENT__CARD) {
                       createYooKassaPayment()
                     } else if (!payment) {
