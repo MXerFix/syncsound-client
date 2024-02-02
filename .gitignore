@@ -1,6 +1,5 @@
 node_modules
 build
-./DS_Store
 .react-email
 DS_Store
 .env
